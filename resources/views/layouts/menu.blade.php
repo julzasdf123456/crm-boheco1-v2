@@ -120,8 +120,8 @@ use Illuminate\Support\Facades\Auth;
 
             @canany(['Super Admin', 'sc view'])
                 <li class="nav-item">
-                    <a href="{{ route('serviceConnections.index') }}"
-                    class="nav-link {{ Request::is('serviceConnections*') ? 'active' : '' }}">
+                    <a href="{{ route('serviceConnections.search-all') }}"
+                    class="nav-link {{ Request::is('serviceConnections.search-all*') ? 'active' : '' }}">
                         <i class="fas fa-bolt nav-icon text-warning"></i>
                         <p>All Applications</p>
                     </a>

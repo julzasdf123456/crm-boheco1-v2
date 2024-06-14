@@ -5,6 +5,7 @@
     <title>{{ config('app.name') }}</title>
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
     <meta name="color-profile" content="{{ Auth::user()->ColorProfile }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     {{-- <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&amp;display=fallback"> --}}
     <link rel="stylesheet" href="{{ URL::asset('css/source_sans_pro.css'); }} ">
@@ -239,6 +240,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
+            <li class="nav-item">
+                <p class="title-text" id="page-title"></p>
+            </li>   
         </ul>
 
         <ul class="navbar-nav ml-auto">

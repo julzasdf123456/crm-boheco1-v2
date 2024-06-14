@@ -88,8 +88,9 @@
                 } else {
                     $.ajax({
                         url : "{{ route('serviceConnections.update-or') }}",
-                        type : 'GET',
+                        type : 'POST',
                         data : {
+                            _token : "{{ csrf_token() }}",
                             id : scid,
                             ORNumber : or,
                             ORDate : ordate

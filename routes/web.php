@@ -160,7 +160,7 @@ Route::get('/service_connections/download-energization-per-town/{mnth}/{year}', 
 Route::get('/service_connections/meter-installation', [App\Http\Controllers\ServiceConnectionsController::class, 'meterInstallation'])->name('serviceConnections.meter-installation');
 Route::get('/service_connections/download-meter-installation/{from}/{to}/{office}', [App\Http\Controllers\ServiceConnectionsController::class, 'downloadMeterInstallation'])->name('serviceConnections.download-meter-installation');
 Route::get('/service_connections/update-status', [ServiceConnectionsController::class, 'updateStatus'])->name('serviceConnections.update-status');
-Route::get('/service_connections/update-or', [ServiceConnectionsController::class, 'updateOR'])->name('serviceConnections.update-or');
+Route::post('/service_connections/update-or', [ServiceConnectionsController::class, 'updateOR'])->name('serviceConnections.update-or');
 Route::get('/service_connections/summary-report', [ServiceConnectionsController::class, 'summaryReport'])->name('serviceConnections.summary-report');
 Route::get('/service_connections/download-summary-report/{month}/{year}', [ServiceConnectionsController::class, 'downloadSummaryReport'])->name('serviceConnections.download-summary-report');
 Route::get('/service_connections/get-inspection-summary-data-calendar', [ServiceConnectionsController::class, 'getInspectionSummaryDataCalendar'])->name('serviceConnections.get-inspection-summary-data-calendar');
@@ -186,6 +186,8 @@ Route::get('/service_connections/forward-remittance', [ServiceConnectionsControl
 Route::get('/service_connections/forward-installation-fees', [ServiceConnectionsController::class, 'forwardInstallationFees'])->name('serviceConnections.forward-installation-fees');
 Route::get('/service_connections/forward-transformer-fees', [ServiceConnectionsController::class, 'forwardTransformerFees'])->name('serviceConnections.forward-transformer-fees');
 Route::get('/service_connections/forward-all-fees', [ServiceConnectionsController::class, 'forwardAllFees'])->name('serviceConnections.forward-all-fees');
+Route::get('/service_connections/search-all', [ServiceConnectionsController::class, 'searchAll'])->name('serviceConnections.search-all');
+Route::get('/service_connections/search-ajax', [ServiceConnectionsController::class, 'searchAjax'])->name('serviceConnections.search-ajax');
 Route::resource('serviceConnections', App\Http\Controllers\ServiceConnectionsController::class);
 
 

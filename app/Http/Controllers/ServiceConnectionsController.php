@@ -267,7 +267,6 @@ class ServiceConnectionsController extends AppBaseController
                         'CRM_ServiceConnections.EmailAddress as EmailAddress',  
                         'CRM_ServiceConnections.AccountApplicationType as AccountApplicationType', 
                         'CRM_ServiceConnections.AccountOrganization as AccountOrganization', 
-                        'CRM_ServiceConnections.AccountApplicationType as AccountApplicationType', 
                         'CRM_ServiceConnections.ConnectionApplicationType as ConnectionApplicationType',
                         'CRM_ServiceConnections.MemberConsumerId as MemberConsumerId',
                         'CRM_ServiceConnections.Status as Status',  
@@ -3322,7 +3321,7 @@ class ServiceConnectionsController extends AppBaseController
         $timeFrame->save();
 
 
-        return response()->json('ok', 200);
+        return response()->json(['ORNumber' => $or, 'ORDate' => $orDate], 200);
     }
 
     public function summaryReport(Request $request) {
@@ -4605,5 +4604,82 @@ class ServiceConnectionsController extends AppBaseController
         CRMQueue::saveAllFees($serviceConnection, $totalTransactions);
 
         return response()->json($totalTransactions, 200);
+    }
+
+    public function searchAll(Request $request) {
+        return view('/service_connections/search_all', [
+
+        ]);
+    }
+
+    public function searchAjax(Request $request) {
+        if ($request['params'] == null) {
+            $data = DB::table('CRM_ServiceConnections')
+                ->leftJoin('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')                    
+                ->leftJoin('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
+                ->leftJoin('CRM_ServiceConnectionMeterAndTransformer', 'CRM_ServiceConnections.id', '=', 'CRM_ServiceConnectionMeterAndTransformer.ServiceConnectionId')
+                ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
+                ->select('CRM_ServiceConnections.id as ConsumerId',
+                                'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
+                                'CRM_ServiceConnections.Status as Status',
+                                'CRM_ServiceConnections.DateOfApplication as DateOfApplication', 
+                                'CRM_ServiceConnections.ContactNumber as ContactNumber', 
+                                'CRM_ServiceConnections.EmailAddress as EmailAddress',  
+                                'CRM_ServiceConnections.AccountCount as AccountCount',  
+                                'CRM_ServiceConnections.ConnectionApplicationType',
+                                'CRM_ServiceConnectionAccountTypes.AccountType as AccountType',
+                                'CRM_ServiceConnections.AccountApplicationType as AccountApplicationType', 
+                                'CRM_ServiceConnections.Office',
+                                'CRM_ServiceConnections.Sitio as Sitio', 
+                                'CRM_Towns.Town as Town',
+                                'CRM_ServiceConnections.ORNumber',
+                                'CRM_ServiceConnections.ORDate',
+                                'CRM_ServiceConnections.LoadCategory',
+                                'CRM_Barangays.Barangay as Barangay',
+                                'CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber')
+                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation')")
+                ->where(function ($query) {
+                                    $query->where('CRM_ServiceConnections.Trash', 'No')
+                                        ->orWhereNull('CRM_ServiceConnections.Trash');
+                                })
+                ->orderByDesc('CRM_ServiceConnections.created_at')
+                ->paginate(25);
+        } else {
+            $data = DB::table('CRM_ServiceConnections')
+                ->leftJoin('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')                    
+                ->leftJoin('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
+                ->leftJoin('CRM_ServiceConnectionMeterAndTransformer', 'CRM_ServiceConnections.id', '=', 'CRM_ServiceConnectionMeterAndTransformer.ServiceConnectionId')
+                ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
+                ->select('CRM_ServiceConnections.id as ConsumerId',
+                                'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
+                                'CRM_ServiceConnections.Status as Status',
+                                'CRM_ServiceConnections.DateOfApplication as DateOfApplication', 
+                                'CRM_ServiceConnections.ContactNumber as ContactNumber', 
+                                'CRM_ServiceConnections.EmailAddress as EmailAddress',  
+                                'CRM_ServiceConnections.AccountCount as AccountCount',  
+                                'CRM_ServiceConnections.ConnectionApplicationType',
+                                'CRM_ServiceConnectionAccountTypes.AccountType as AccountType',
+                                'CRM_ServiceConnections.AccountApplicationType as AccountApplicationType', 
+                                'CRM_ServiceConnections.Office',
+                                'CRM_ServiceConnections.Sitio as Sitio', 
+                                'CRM_Towns.Town as Town',
+                                'CRM_ServiceConnections.ORNumber',
+                                'CRM_ServiceConnections.ORDate',
+                                'CRM_ServiceConnections.LoadCategory',
+                                'CRM_Barangays.Barangay as Barangay',
+                                'CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber')
+                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation')")
+                ->where(function ($query) {
+                                    $query->where('CRM_ServiceConnections.Trash', 'No')
+                                        ->orWhereNull('CRM_ServiceConnections.Trash');
+                                })
+                ->where('CRM_ServiceConnections.ServiceAccountName', 'LIKE', '%' . $request['params'] . '%')
+                ->orWhere('CRM_ServiceConnections.Id', 'LIKE', '%' . $request['params'] . '%')
+                ->orWhere('CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber', 'LIKE', '%' . $request['params'] . '%')
+                ->orderBy('CRM_ServiceConnections.ServiceAccountName')
+                ->paginate(25);
+        }
+
+        return response()->json($data, 200);
     }
 }

@@ -1,9 +1,9 @@
 import './bootstrap';
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
 
-// import ServiceAccountsIndex from "./components/service_accounts/index.vue"
+import SearchAll from "./components/service-connections/search-all.vue"
 
 const app = createApp({});
-// app.component('service-accounts', ServiceAccountsIndex);
+app.component('search-all', SearchAll);
 
 app.mount("#app");

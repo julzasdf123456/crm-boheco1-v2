@@ -13,4 +13,4 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 window.axios.defaults.baseURL = '/crm-boheco1/public/index.php';
 window.axios.defaults.filePath = '/crm-boheco1/public/scfiles/';
-window.axios.defaults.imgPath = '/crm-boheco1/public/imgs/';
+window.axios.defaults.imgURL = '/crm-boheco1/public/imgs/';
