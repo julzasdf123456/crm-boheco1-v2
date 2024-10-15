@@ -51,39 +51,16 @@ You can support us by either sponsoring us or buying one of our paid products. O
 
 You can also check out our other paid products on [CodeCanyon](https://codecanyon.net/user/infyomlabs/portfolio).
 
-### Follow Us
-
-- [Twitter](https://twitter.com/infyom)
-- [Facebook](https://www.facebook.com/infyom)
-- [LinkedIn](https://in.linkedin.com/company/infyom-technologies)
-- [Youtube](https://www.youtube.com/channel/UC8IvwfChD6i7Wp4yZp3tNsQ)
-- [Contact Us](https://infyom.com/contact-us)
-
 - to Run: php artisan serve --host 192.168.0.124 --port 80
 
-### Project Config
-- In table CRM_MemberConsumerImages Manually "HexImage - Text" to database;
-
-### Tickets
-- In the creation of Tickets, replace the array of METER-RELATED mother tickets to capture all the tickets pertaining to meter complains
-    (found in TicketsController.store)
-- Disconnection Delinquency Ticket ID - in Tickets, configure the ID of the Disconnection Delinquency inside Tickets.getDisconnectionDelinquencyId() function
-
-### Billing - Rates
-- In the "Rates Template", make sure to add the Real Property Tax (RPT) to the overall rate during deployment (optional)
-- Make Sure to use the FOR UPLOAD Sheet or FILE
-- Also, make sure that the arrangement of Districts on the For Upload Template is not interchanged
 
 ### User - Special Authentication
-- In UsersController.authenticate(), update the permissions
 
 ### Additional Roles
 
 ### Additional Permissions
 
 ### Additional Tables
-1. CRM_MiscellaneousApplications
-2. CRM_MiscellaneousPayments
 
 ### Additional Columns
 

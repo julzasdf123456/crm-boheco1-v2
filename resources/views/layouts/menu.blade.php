@@ -1476,3 +1476,10 @@ use Illuminate\Support\Facades\Auth;
 
 
 
+
+<li class="nav-item">
+    <a href="{{ route('billsReadings.index') }}" class="nav-link {{ Request::is('billsReadings*') ? 'active' : '' }}">
+        <i class="nav-icon fas fa-home"></i>
+        <p>Bills Readings</p>
+    </a>
+</li>
