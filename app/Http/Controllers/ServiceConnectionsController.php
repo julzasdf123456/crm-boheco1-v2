@@ -4637,13 +4637,9 @@ class ServiceConnectionsController extends AppBaseController
                                 'CRM_ServiceConnections.LoadCategory',
                                 'CRM_Barangays.Barangay as Barangay',
                                 'CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber')
-                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation')")
-                ->where(function ($query) {
-                                    $query->where('CRM_ServiceConnections.Trash', 'No')
-                                        ->orWhereNull('CRM_ServiceConnections.Trash');
-                                })
+                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation') AND (CRM_ServiceConnections.Trash IS NULL OR CRM_ServiceConnections.Trash='No')")
                 ->orderByDesc('CRM_ServiceConnections.created_at')
-                ->paginate(25);
+                ->paginate(15);
         } else {
             $data = DB::table('CRM_ServiceConnections')
                 ->leftJoin('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')                    
@@ -4668,16 +4664,10 @@ class ServiceConnectionsController extends AppBaseController
                                 'CRM_ServiceConnections.LoadCategory',
                                 'CRM_Barangays.Barangay as Barangay',
                                 'CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber')
-                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation')")
-                ->where(function ($query) {
-                                    $query->where('CRM_ServiceConnections.Trash', 'No')
-                                        ->orWhereNull('CRM_ServiceConnections.Trash');
-                                })
-                ->where('CRM_ServiceConnections.ServiceAccountName', 'LIKE', '%' . $request['params'] . '%')
-                ->orWhere('CRM_ServiceConnections.Id', 'LIKE', '%' . $request['params'] . '%')
-                ->orWhere('CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber', 'LIKE', '%' . $request['params'] . '%')
+                ->whereRaw("ConnectionApplicationType NOT IN ('Relocation') AND (CRM_ServiceConnections.Trash IS NULL OR CRM_ServiceConnections.Trash='No')")
+                ->whereRaw("(CRM_ServiceConnections.Id LIKE '%" . $request['params'] . "%' OR CRM_ServiceConnections.ServiceAccountName LIKE '%" . $request['params'] . "%' OR CRM_ServiceConnectionMeterAndTransformer.MeterSerialNumber LIKE '%" . $request['params'] . "%')")
                 ->orderBy('CRM_ServiceConnections.ServiceAccountName')
-                ->paginate(25);
+                ->paginate(15);
         }
 
         return response()->json($data, 200);
