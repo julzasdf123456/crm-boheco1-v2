@@ -1270,4 +1270,99 @@ class MemberConsumersController extends AppBaseController
 
         return redirect(route('memberConsumers.trash'));
     }
+
+    public function searchMembership(Request $request) {
+        return view('/member_consumers/search');
+    }
+
+    public function getSearch(Request $request) {
+        $param = $request['search'];
+            
+        if (isset($param)) {
+            $data = DB::table('CRM_MemberConsumers')
+                ->leftJoin(DB::raw("CRM_MemberConsumerTypes"), DB::raw("TRY_CAST(CRM_MemberConsumers.MembershipType AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_MemberConsumerTypes.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_Barangays"), DB::raw("TRY_CAST(CRM_MemberConsumers.Barangay AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_Barangays.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_Towns"), DB::raw("TRY_CAST(CRM_MemberConsumers.Town AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_Towns.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_MemberConsumerSpouse"), DB::raw("TRY_CAST(CRM_MemberConsumers.id AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_MemberConsumerSpouse.MemberConsumerId AS VARCHAR(100))"))
+                ->select('CRM_MemberConsumers.Id as ConsumerId',
+                                'CRM_MemberConsumers.MembershipType as MembershipType', 
+                                'CRM_MemberConsumers.FirstName as FirstName', 
+                                'CRM_MemberConsumers.MiddleName as MiddleName', 
+                                'CRM_MemberConsumers.LastName as LastName', 
+                                'CRM_MemberConsumers.OrganizationName as OrganizationName', 
+                                'CRM_MemberConsumers.Suffix as Suffix', 
+                                'CRM_MemberConsumers.Birthdate as Birthdate', 
+                                'CRM_MemberConsumers.Barangay as BarangayId', 
+                                'CRM_MemberConsumers.ApplicationStatus as ApplicationStatus',
+                                'CRM_MemberConsumers.DateApplied as DateApplied', 
+                                'CRM_MemberConsumers.CivilStatus as CivilStatus', 
+                                'CRM_MemberConsumers.DateApproved as DateApproved', 
+                                'CRM_MemberConsumers.ContactNumbers as ContactNumbers', 
+                                'CRM_MemberConsumers.EmailAddress as EmailAddress',  
+                                'CRM_MemberConsumers.Notes as Notes', 
+                                'CRM_MemberConsumers.Gender as Gender',
+                                'CRM_MemberConsumers.Office', 
+                                'CRM_MemberConsumers.Sitio as Sitio', 
+                                'CRM_MemberConsumerTypes.*',
+                                'CRM_Towns.Town as Town',
+                                'CRM_MemberConsumerSpouse.FirstName AS SpouseFirstName',
+                                'CRM_Barangays.Barangay as Barangay')
+                ->whereRaw("CRM_MemberConsumers.Trashed IS NULL AND (CRM_MemberConsumers.LastName LIKE '%" . $param . "%' OR CRM_MemberConsumers.Id LIKE '%" . $param . "%' OR CRM_MemberConsumers.MiddleName LIKE '%" . $param . "%' OR CRM_MemberConsumers.FirstName LIKE '%" . $param . "%' OR 
+                    CONCAT(LastName, ',', FirstName) LIKE '%" . $param . "%' OR CONCAT(LastName, ', ', FirstName) LIKE '%" . $param . "%' OR CONCAT(FirstName, ' ', LastName) LIKE '%" . $param . "%' OR CONCAT(LastName, ' ', FirstName) LIKE '%" . $param . "%' OR 
+                    CRM_MemberConsumers.OrganizationName LIKE '%" . $param . "%' OR ORNumber LIKE '%" . $param . "%')")
+                ->orderBy('CRM_MemberConsumers.FirstName')
+                ->paginate(15);
+        } else {
+            $data = DB::table('CRM_MemberConsumers')
+                ->leftJoin(DB::raw("CRM_MemberConsumerTypes"), DB::raw("TRY_CAST(CRM_MemberConsumers.MembershipType AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_MemberConsumerTypes.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_Barangays"), DB::raw("TRY_CAST(CRM_MemberConsumers.Barangay AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_Barangays.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_Towns"), DB::raw("TRY_CAST(CRM_MemberConsumers.Town AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_Towns.id AS VARCHAR(100))"))
+                ->leftJoin(DB::raw("CRM_MemberConsumerSpouse"), DB::raw("TRY_CAST(CRM_MemberConsumers.id AS VARCHAR(100))"), '=', DB::raw("TRY_CAST(CRM_MemberConsumerSpouse.MemberConsumerId AS VARCHAR(100))"))
+                ->select('CRM_MemberConsumers.Id as ConsumerId',
+                                'CRM_MemberConsumers.MembershipType as MembershipType', 
+                                'CRM_MemberConsumers.FirstName as FirstName', 
+                                'CRM_MemberConsumers.MiddleName as MiddleName', 
+                                'CRM_MemberConsumers.LastName as LastName', 
+                                'CRM_MemberConsumers.OrganizationName as OrganizationName', 
+                                'CRM_MemberConsumers.Suffix as Suffix', 
+                                'CRM_MemberConsumers.Birthdate as Birthdate', 
+                                'CRM_MemberConsumers.Barangay as BarangayId', 
+                                'CRM_MemberConsumers.ApplicationStatus as ApplicationStatus',
+                                'CRM_MemberConsumers.DateApplied as DateApplied', 
+                                'CRM_MemberConsumers.CivilStatus as CivilStatus', 
+                                'CRM_MemberConsumers.DateApproved as DateApproved', 
+                                'CRM_MemberConsumers.ContactNumbers as ContactNumbers', 
+                                'CRM_MemberConsumers.EmailAddress as EmailAddress',  
+                                'CRM_MemberConsumers.Notes as Notes', 
+                                'CRM_MemberConsumers.Gender as Gender', 
+                                'CRM_MemberConsumers.Office',
+                                'CRM_MemberConsumers.Sitio as Sitio', 
+                                'CRM_MemberConsumerTypes.*',
+                                'CRM_Towns.Town as Town',
+                                'CRM_MemberConsumerSpouse.FirstName AS SpouseFirstName',
+                                'CRM_Barangays.Barangay as Barangay')
+                ->whereRaw("CRM_MemberConsumers.Trashed IS NULL")
+                ->orderBy('CRM_MemberConsumers.FirstName')
+                ->paginate(15);
+        }
+
+        return response()->json($data, 200);
+    }
+
+    public function deleteOne(Request $request) {
+        $id = $request['id'];
+        /**
+         * ASSESS PERMISSIONS
+         */
+        if(Auth::user()->hasAnyPermission(['delete membership', 'sc delete', 'Super Admin'])) {
+            $memberConsumers = $this->memberConsumersRepository->find($id);
+
+            $memberConsumers->Trashed = 'Yes';
+            $memberConsumers->save();
+
+            return response()->json('ok', 200);
+        } else {
+            return response()->json("You're not authorized to delete a membership application.", 403);
+        }   
+    }
 }

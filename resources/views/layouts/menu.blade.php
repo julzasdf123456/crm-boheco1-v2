@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Auth;
         <ul class="nav nav-treeview">
             @canany(['Super Admin', 'view membership'])
                 <li class="nav-item">
-                    <a href="{{ route('memberConsumers.index') }}"
-                    class="nav-link {{ Request::is('memberConsumers.index*') ? 'active' : '' }}">
+                    <a href="{{ route('memberConsumers.search-membership') }}"
+                    class="nav-link {{ Request::is('memberConsumers.search-membership*') ? 'active' : '' }}">
                     <i class="fas fa-street-view nav-icon text-success"></i><p>Member Consumers</p>
                     </a>
                 </li>
