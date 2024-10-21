@@ -1308,7 +1308,7 @@ class MemberConsumersController extends AppBaseController
                                 'CRM_MemberConsumerSpouse.FirstName AS SpouseFirstName',
                                 'CRM_Barangays.Barangay as Barangay')
                 ->whereRaw("CRM_MemberConsumers.Trashed IS NULL AND (CRM_MemberConsumers.LastName LIKE '%" . $param . "%' OR CRM_MemberConsumers.Id LIKE '%" . $param . "%' OR CRM_MemberConsumers.MiddleName LIKE '%" . $param . "%' OR CRM_MemberConsumers.FirstName LIKE '%" . $param . "%' OR 
-                    CONCAT(LastName, ',', FirstName) LIKE '%" . $param . "%' OR CONCAT(LastName, ', ', FirstName) LIKE '%" . $param . "%' OR CONCAT(FirstName, ' ', LastName) LIKE '%" . $param . "%' OR CONCAT(LastName, ' ', FirstName) LIKE '%" . $param . "%' OR 
+                    CONCAT(CRM_MemberConsumers.LastName, ',', CRM_MemberConsumers.FirstName) LIKE '%" . $param . "%' OR CONCAT(CRM_MemberConsumers.LastName, ', ', CRM_MemberConsumers.FirstName) LIKE '%" . $param . "%' OR CONCAT(CRM_MemberConsumers.FirstName, ' ', CRM_MemberConsumers.LastName) LIKE '%" . $param . "%' OR CONCAT(CRM_MemberConsumers.LastName, ' ', CRM_MemberConsumers.FirstName) LIKE '%" . $param . "%' OR 
                     CRM_MemberConsumers.OrganizationName LIKE '%" . $param . "%' OR ORNumber LIKE '%" . $param . "%')")
                 ->orderBy('CRM_MemberConsumers.FirstName')
                 ->paginate(15);
