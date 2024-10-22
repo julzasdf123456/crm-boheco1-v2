@@ -175,8 +175,8 @@
                                         data: ticketAssigned 
                                     }, 
                                     { 
-                                        backgroundColor: '#ced4da', 
-                                        borderColor: '#ced4da', 
+                                        backgroundColor: '#00b075', 
+                                        borderColor: '#00b075', 
                                         data: ticketExecuted
                                     }
                                 ] 

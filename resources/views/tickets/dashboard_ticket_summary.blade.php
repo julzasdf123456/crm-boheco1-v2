@@ -55,17 +55,7 @@
                         <a href="{{ route('tickets.kps-monitor') }}" class="btn btn-block btn-transparent" title="Average Execution Time This Month">More Info <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
                     </div>
                 </div>               
-            </div>         
-            {{-- <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3 id="average-execution-time">...</h3>
-                    <p>Avg. Exec. Time This Month</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-tools"></i>
-                </div>
-                <a href="{{ route('tickets.kps-monitor') }}" class="small-box-footer">More Info <i class="fas fa-arrow-circle-right"></i></a>
-            </div> --}}
+            </div>  
         </div>
     </div>
 </div>
