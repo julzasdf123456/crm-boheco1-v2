@@ -72,7 +72,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
-      <!-- /.modal-content -->
+    <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>
@@ -106,7 +106,7 @@
                         $('#approved-table tbody tr').remove();
                         $.each(response, function(index, element) {
                             console.log(response[index]['id']);
-                            $('#approved-table tbody').append('<tr><td><a href="/serviceConnections/' + response[index]["id"] + '">' + response[index]['id'] + '</a></td><td>' + response[index]['ServiceAccountName'] + '</td><td>' + response[index]['ConnectionApplicationType'] + '</td><td>' + response[index]['Barangay'] + ', ' + response[index]['Town'] + '</td><td>' + (jQuery.isEmptyObject(response[index]['name']) ? 'n/a' : response[index]['name']) + '</td></tr>');
+                            $('#approved-table tbody').append(`<tr><td><a href="{{ url('serviceConnections/') }}/` + response[index]["id"] + `">` + response[index]['id'] + `</a></td><td>` + response[index]['ServiceAccountName'] + `</td><td>` + response[index]['ConnectionApplicationType'] + `</td><td>` + response[index]['Barangay'] + `, ` + response[index]['Town'] + `</td><td>` + (jQuery.isEmptyObject(response[index]['name']) ? 'n/a' : response[index]['name']) + `</td></tr>`);
                         });
                     },
                     error : function(error) {
@@ -139,7 +139,7 @@
             /**
              * FOR ENERGIZATION 
              */
-             $.ajax({
+            $.ajax({
                 url : '{{ route("home.get-for-engergization") }}',
                 type: "GET",
                 dataType : "json",

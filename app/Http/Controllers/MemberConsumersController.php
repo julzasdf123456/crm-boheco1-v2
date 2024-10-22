@@ -1342,7 +1342,7 @@ class MemberConsumersController extends AppBaseController
                                 'CRM_MemberConsumerSpouse.FirstName AS SpouseFirstName',
                                 'CRM_Barangays.Barangay as Barangay')
                 ->whereRaw("CRM_MemberConsumers.Trashed IS NULL")
-                ->orderBy('CRM_MemberConsumers.FirstName')
+                ->orderByDesc('CRM_MemberConsumers.created_at')
                 ->paginate(15);
         }
 

@@ -102,7 +102,7 @@
             var crew = $('#crew-' + id).val()
             if (!jQuery.isEmptyObject(crew)) {
                 $.ajax({
-                    url : "/tickets/update-ordinary-ticket-assessment",
+                    url : "{{ url('/tickets/update-ordinary-ticket-assessment') }}",
                     type : 'POST',
                     data : {
                         _token : "{{ csrf_token() }}",
