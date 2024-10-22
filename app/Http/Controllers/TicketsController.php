@@ -1381,7 +1381,7 @@ class TicketsController extends AppBaseController
         $stats = DB::table('CRM_Tickets')
             ->select(
                 DB::raw("(SELECT COUNT(id) FROM CRM_Tickets WHERE (Trash IS NULL OR Trash = 'No') AND (created_at BETWEEN '" . $startDate . "' AND '" . $endDate . "')) AS TotalFiled"),
-                DB::raw("(SELECT COUNT(id) FROM CRM_Tickets WHERE (Trash IS NULL OR Trash = 'No') AND DateTimeLinemanExecuted IS NOT NULL AND (DateTimeLinemanExecuted BETWEEN '" . $startDate . "' AND '" . $endDate . "')) AS TotalExecuted")
+                DB::raw("(SELECT COUNT(id) FROM CRM_Tickets WHERE (Trash IS NULL OR Trash = 'No') AND Status='Executed' AND DateTimeLinemanExecuted IS NOT NULL AND (DateTimeLinemanExecuted BETWEEN '" . $startDate . "' AND '" . $endDate . "')) AS TotalExecuted")
             )->limit(1)
             ->first();
 
