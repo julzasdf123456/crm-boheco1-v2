@@ -33,56 +33,59 @@
                             </div>
                             <div class="d-flex flex-row justify-content-end">
                                 <span class="mr-2">
-                                    <i class="fas fa-square text-primary"></i> Assigned
+                                    <i class="fas fa-square" style="color: #c4bd5d;"></i> Assigned
                                 </span>
                                 <span>
-                                    <i class="fas fa-square text-gray"></i> Executed
+                                    <i class="fas fa-square" style="color: #00b075;"></i> Executed
                                 </span>
                             </div>
                         </div>
 
                         <div class="col-lg-4">
-                            <div class="info-box mb-3 bg-warning">
-                                <span class="info-box-icon"><i class="fas fa-calendar"></i></span>
-                                <div class="info-box-content">
-                                <span class="info-box-text">Tickets Filed This Month</span>
-                                <span class="info-box-number" id="tickets-this-month">...</span>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card" style="height: 100%;">
+                                        <div class="card-body py-4">
+                                            <h1 class="text-success text-center" id="tickets-this-month">...</h1>
+                                            <p class="text-sm text-muted text-center no-pads">Tickets Filed</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                            </div>
-                                
-                            <div class="info-box mb-3 bg-success">
-                                <span class="info-box-icon"><i class="fas fa-calculator"></i></span>
-                                <div class="info-box-content">
-                                <span class="info-box-text">Filed Daily Average</span>
-                                <span class="info-box-number" id="average-this-month">...</span>
-                                </div>                                    
-                            </div>
-                                
-                            <div class="info-box mb-3 bg-danger">
-                                <span class="info-box-icon"><i class="fas fa-calendar-check"></i></span>
-                                <div class="info-box-content">
-                                <span class="info-box-text">Tickets Executed This Month</span>
-                                <span class="info-box-number" id="executed-this-month">...</span>
+
+                                <div class="col-lg-6">
+                                    <div class="card" style="height: 100%;">
+                                        <div class="card-body py-4">
+                                            <h1 class="text-success text-center" id="average-this-month">...</h1>
+                                            <p class="text-sm text-muted text-center no-pads">Daily Ticket Average</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                            </div>
-                                
-                            <div class="info-box mb-3 bg-info">
-                                <span class="info-box-icon"><i class="fas fa-clipboard-check"></i></span>
-                                <div class="info-box-content">
-                                <span class="info-box-text">Execution Daily Average</span>
-                                <span class="info-box-number" id="execution-daily-average">...</span>
+
+                                <div class="col-lg-6 mt-3">
+                                    <div class="card" style="height: 100%;">
+                                        <div class="card-body py-4">
+                                            <h1 class="text-success text-center" id="executed-this-month-data">...</h1>
+                                            <p class="text-sm text-muted text-center no-pads">Tickets Executed</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 mt-3">
+                                    <div class="card" style="height: 100%;">
+                                        <div class="card-body py-4">
+                                            <h1 class="text-success text-center" id="execution-daily-average">...</h1>
+                                            <p class="text-sm text-muted text-center no-pads">Execution Daily Average</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                                
                         </div>
                     </div>                        
                     
                 </div>
                 <div class="card-footer table-responsive">
                     <p class="card-title">Crew Average Performance</p>
-                    <table class="table table-hover table-sm table-bordered table-striped" id="ticket-average-hours-table">
+                    <table class="table table-hover table-sm table-bordered" id="ticket-average-hours-table">
                         <thead>
                             <tr>
                                 <th rowspan="2" class="text-center">Crew</th>
@@ -170,8 +173,8 @@
                                 labels: ticketsCrew, 
                                 datasets: [
                                     { 
-                                        backgroundColor: '#007bff', 
-                                        borderColor: '#007bff', 
+                                        backgroundColor: '#c4bd5d', 
+                                        borderColor: '#c4bd5d', 
                                         data: ticketAssigned 
                                     }, 
                                     { 
@@ -258,9 +261,10 @@
                 success : function(res) {
                     if (!jQuery.isEmptyObject(res)) {
                         $('#tickets-this-month').text(res[0]['TotalFiled'])
-                        $('#executed-this-month').text(res[0]['TotalExecuted'])
+                        $('#executed-this-month-data').text(res[0]['TotalExecuted'])
                         $('#average-this-month').text(res[0]['AverageFiled'])
                         $('#execution-daily-average').text(res[0]['AverageExecuted'])
+                        console.log(res[0])
                     }
                 }, 
                 error : function(err) {
