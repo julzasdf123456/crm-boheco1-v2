@@ -211,7 +211,7 @@
 
                 // console.log(crew + ' - ' + id);
                 $.ajax({
-                    url : '/service_connections/change-station-crew',
+                    url : '{{ url("/service_connections/change-station-crew") }}',
                     type : "POST",
                     data : {
                         _token : $("#csrf").val(),
@@ -222,6 +222,10 @@
                     },
                     // dataType : 'json',
                     success : function(data) {
+                        Toast.fire({
+                            icon : 'success',
+                            text : 'Crew changed!'
+                        })
                         $('#crew-data').trigger('reset');
                         $('#modal-default').modal('hide');
                         console.log(data);
@@ -259,7 +263,7 @@
                     $('#error-message').hide();
                     // console.log(crew + ' - ' + id);
                     $.ajax({
-                        url : '/service_connections/update-energization-status',
+                        url : '{{ url("/service_connections/update-energization-status") }}',
                         type : "POST",
                         data : {
                             _token : $("#csrfEnergization").val(),
@@ -271,6 +275,10 @@
                         },
                         // dataType : 'json',
                         success : function(data) {
+                            Toast.fire({
+                                icon : 'success',
+                                text : 'Application status updated!'
+                            })
                             $('#energization-update').trigger('reset');
                             $('#modal-energization').modal('hide');
                             console.log(data);

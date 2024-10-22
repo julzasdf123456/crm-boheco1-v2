@@ -1,43 +1,46 @@
 <div>
     <span class="text-muted" style="margin-left: 3px;"><i class="fas fa-hard-hat ico-tab-mini"></i><strong>Service Connections</strong> Statistics</span>
-    <div class="row">
+    <div class="row mt-3">
         {{-- STATUS COUNT --}}
-        <div class="col-lg-3">                
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3 id="new-applications">...</h3>
-                    <p>New Applications</p>
+        <div class="col-lg-3">
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">New Applications</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="new-applications">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="#" id="new-applications-btn" class="btn btn-block btn-transparent" title="New Applications for Inspection"  data-toggle="modal" data-target="#modal-stats">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
+                </div>               
+            </div>  
+        </div>
+
+        <div class="col-lg-3"> 
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">For Meter Assigning</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="for-meter-assigning">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="{{ route('serviceConnectionMtrTrnsfrmrs.assigning') }}" class="btn btn-block btn-transparent" title="Applications to be assigned with an electric meter">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-file"></i>
-                </div>
-                <a href="#" id="new-applications-btn" class="small-box-footer" title="New Applications for Inspection"  data-toggle="modal" data-target="#modal-stats">View <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
-        <div class="col-lg-3">                
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3 id="for-meter-assigning">...</h3>
-                    <p>For Meter Assigning</p>
+        <div class="col-lg-3">
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">For Energization</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="for-energization">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="{{ route('serviceConnections.energization') }}" class="btn btn-block btn-transparent" title="Applications for Energization">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-forward"></i>
-                </div>
-                <a href="{{ route('serviceConnectionMtrTrnsfrmrs.assigning') }}" class="small-box-footer" title="Tickets Sent To Crew" >View <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-        </div>
-
-        <div class="col-lg-3">                
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3 id="for-energization">...</h3>
-                    <p>For Energization</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <a href="{{ route('serviceConnections.energization') }}" id="for-energization-btn" class="small-box-footer" title="Tickets Executed This Month">View <i class="fas fa-arrow-circle-right"></i></a>
             </div>
         </div>
 
@@ -149,6 +152,7 @@
                 },
                 error : function(error) {
                     // alert(error);
+                    console.log(error)
                     console.log('Server error!');
                 }
             })

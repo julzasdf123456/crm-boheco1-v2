@@ -104,7 +104,7 @@ class HomeController extends Controller
                             ->orWhere('Status', 'Not Energized')
                             ->orWhere('Status', 'Downloaded By Crew');
                     })
-                    ->whereIn('id', DB::table('CRM_ServiceConnectionMeterAndTransformer')->pluck('ServiceConnectionId'))
+                    ->whereRaw("id IN (SELECT ServiceConnectionId FROM CRM_ServiceConnectionMeterAndTransformer WHERE ServiceConnectionId=CRM_ServiceConnections.id)")
                     ->select('*')
                     ->orderBy('ServiceAccountName')
                     ->get();

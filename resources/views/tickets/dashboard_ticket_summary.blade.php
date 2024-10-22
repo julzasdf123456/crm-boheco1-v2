@@ -1,48 +1,62 @@
 <div>
     <span class="text-muted" style="margin-left: 3px;"><i class="fas fa-tools ico-tab-mini"></i><strong>Ticket</strong> Statistics</span>
-    <div class="row">
+    <div class="row mt-3">
         {{-- STATUS COUNT --}}
-        <div class="col-lg-3">                
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3 id="new-tickets">...</h3>
-                    <p>New Received Tickets</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-file"></i>
-                </div>
-                <a href="#" id="new-tickets-btn" class="small-box-footer" title="New Received Tickets"  data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-3"> 
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">New Received Tickets</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="new-tickets">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="#" id="new-tickets-btn" class="btn btn-block btn-transparent" title="New Received Tickets" data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
+                </div>               
             </div>
         </div>
 
-        <div class="col-lg-3">                
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3 id="sent-to-lineman">...</h3>
-                    <p>Tickets Sent To Crew</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-forward"></i>
-                </div>
-                <a href="#" id="sent-to-lineman-btn" class="small-box-footer" title="Tickets Sent To Crew"  data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-3">
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">Tickets Sent To Crew</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="sent-to-lineman">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="#" id="sent-to-lineman-btn" class="btn btn-block btn-transparent" title="Tickets Sent To Crew" data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
+                </div>               
             </div>
         </div>
 
-        <div class="col-lg-3">                
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3 id="executed-this-month">...</h3>
-                    <p>Tickets Executed This Month</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
-                <a href="#" id="executed-this-month-btn" class="small-box-footer" title="Tickets Executed This Month"  data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right"></i></a>
+        <div class="col-lg-3">
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">Tickets Executed This Month</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="executed-this-month">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="#" id="executed-this-month-btn" class="btn btn-block btn-transparent" title="Tickets Executed This Month" data-toggle="modal" data-target="#modal-statistics">View <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
+                </div>               
             </div>
         </div>
 
-        <div class="col-lg-3">                
-            <div class="small-box bg-danger">
+        <div class="col-lg-3">       
+            <div class="card shadow-none">
+                <div class="card-body p-0 mt-3 mb-2">
+                    <div class="inner">
+                        <p class="no-pads text-muted text-center">Avg. Exec. Time This Month</p>
+                        <h1 class="text-center strong text-xxl text-success mt-3" id="average-execution-time">...</h1>
+                    </div>
+                    <div class="px-3">
+                        <a href="{{ route('tickets.kps-monitor') }}" class="btn btn-block btn-transparent" title="Average Execution Time This Month">More Info <i class="fas fa-arrow-circle-right ico-tab-left-mini"></i></a>
+                    </div>
+                </div>               
+            </div>         
+            {{-- <div class="small-box bg-danger">
                 <div class="inner">
                     <h3 id="average-execution-time">...</h3>
                     <p>Avg. Exec. Time This Month</p>
@@ -51,7 +65,7 @@
                     <i class="fas fa-tools"></i>
                 </div>
                 <a href="{{ route('tickets.kps-monitor') }}" class="small-box-footer">More Info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
+            </div> --}}
         </div>
     </div>
 </div>
@@ -118,7 +132,7 @@
              */
             function fetchStatistics() {
                 $.ajax({
-                    url : '/tickets/get-ticket-statistics',
+                    url : '{{ url("/tickets/get-ticket-statistics")}}',
                     type : 'GET',
                     success : function(res) {
                         if (!jQuery.isEmptyObject(res[0])) {
@@ -140,7 +154,7 @@
             function fetchStatDetails(query) {
                 $('#results-table tbody tr').remove()
                 $.ajax({
-                    url : '/tickets/get-ticket-statistics-details',
+                    url : '{{ url("/tickets/get-ticket-statistics-details") }}',
                     type : 'GET',
                     data : {
                         Query : query
