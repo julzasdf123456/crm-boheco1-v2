@@ -813,6 +813,7 @@ Route::resource('meters', App\Http\Controllers\MetersController::class);
 Route::get('/bills/show-bill/{acctno}/{period}', [BillsController::class, 'showBill'])->name('bills.show-bill');
 Route::get('/bills/dashboard', [BillsController::class, 'dashboard'])->name('bills.dashboard');
 Route::get('/bills/get-latest-month-statistics', [BillsController::class, 'getLastestMonthsStatistics'])->name('bills.get-latest-month-statistics');
+Route::get('/bills/get-bills-annual-stats', [BillsController::class, 'getBillsAnnualStats'])->name('bills.get-bills-annual-stats');
 Route::resource('bills', BillsController::class);
 
 

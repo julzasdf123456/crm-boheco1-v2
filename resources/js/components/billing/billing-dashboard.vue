@@ -1,5 +1,6 @@
 <template>
     <div class="row px-3">
+        <!-- quick stats -->
         <div class="col-lg-12">
             <div class="card shadow-none" style="background: linear-gradient(to right, #17bf87, #c4bd5d);">
                 <div class="card-body p-4">
@@ -41,6 +42,26 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- bills graph -->
+        <div class="col-lg-12">
+            <div class="card shadow-none">
+                <div class="card-header border-0">
+                    <span class="card-title text-muted"><i class="fas fa-chart-line ico-tab"></i>Annual Bills Trend</span>
+                    <div class="card-tools">
+                        <select v-model="yearSelect" class="form-control form-control-sm mr-2" style="width: 90px;" @change="getAnnualBillsStatistics">
+                            <option v-for="y in years" :value="y" :key="y">{{ y }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mt-3">
+                        <Line :data="annualBillsGraphData" :options="lineOptions" />
+                    </div>
+                </div>
+                <div class="card-footer"></div>
             </div>
         </div>
     </div>
@@ -102,7 +123,25 @@ export default {
                 timer: 3000
             }),
             latestMonth : null,
-            totalStats : {}
+            totalStats : {},
+            yearSelect : null,
+            years : [],
+            annualBillsStats : [],
+            // bills annual graph
+            lineOptions : {
+                responsive: true,
+                maintainAspectRatio: false
+            },
+            annualBillsGraphData : {
+                labels: [],
+                datasets: [
+                    {
+                        borderColor : '#00968b',
+                        backgroundColor : '#afafaf',
+                        data: []
+                    }
+                ]
+            },
         }
     },
     methods : {
@@ -162,12 +201,18 @@ export default {
         generateUniqueId() {
             return moment().valueOf() + "-" + this.generateRandomString(32);
         },
+        prepYears() {
+            this.yearSelect = moment().format('Y')
+            for (let i=0; i<10; i++) {
+                var y = parseInt(this.yearSelect)
+                this.years.push(y - i)
+            }
+        },
         getLatestMonthStatistics() {
             axios.get(`${ this.baseURL }/bills/get-latest-month-statistics`)
             .then(response => {
                 this.latestMonth = response.data.LatestMonth
                 this.totalStats = response.data.TotalStats
-                console.log(this.totalStats)
             })
             .catch(error => {
                 this.toast.fire({
@@ -176,13 +221,63 @@ export default {
                 });
                 console.log(error.response)
             });
+        },
+        getAnnualBillsStatistics() {
+            axios.get(`${ this.baseURL }/bills/get-bills-annual-stats`, {
+                params : {
+                    Year : this.yearSelect
+                }
+            })
+            .then(response => {
+                this.annualBillsStats = response.data
+
+                this.graphAnnualBillsStatistics()
+            })
+            .catch(error => {
+                this.toast.fire({
+                    icon : 'error',
+                    title : 'Error getting annual bills stats!',
+                });
+                console.log(error.response)
+            });
+        },
+        graphAnnualBillsStatistics() {
+            // prep data
+            var thisYear = []
+            var prevYear = []
+            for (let i=0; i<12; i++) {
+                thisYear.push(this.annualBillsStats.ThisYear[i].TotalKwh)
+                prevYear.push(this.annualBillsStats.PreviousYear[i].TotalKwh)
+            }
+            console.log(thisYear)
+            this.annualBillsGraphData = {
+                labels : this.annualBillsStats.Labels,
+                datasets : [
+                    {
+                        label : this.yearSelect,
+                        data : thisYear,
+                        backgroundColor : 'rgba(196, 189, 93, .2)',
+                        borderColor : '#c4bd5d',
+                        borderWidth: 2,
+                    },
+                    {
+                        label : parseInt(this.yearSelect)-1,
+                        data : prevYear,
+                        backgroundColor : 'rgba(23, 191, 135, .2)',
+                        borderColor : '#17bf87',
+                        borderWidth: 2,
+                    },
+                ]
+            }
         }
     },
     created() {
         
     },
     mounted() {
+        this.prepYears()
         this.getLatestMonthStatistics()
+        this.getAnnualBillsStatistics()
     }
 }
 

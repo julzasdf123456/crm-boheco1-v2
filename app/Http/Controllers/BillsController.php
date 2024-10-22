@@ -207,7 +207,6 @@ class BillsController extends AppBaseController
     public function getLastestMonthsStatistics(Request $request) {
         $latestMonth = DB::connection('sqlsrvbilling')
             ->table('Bills')
-            ->limit(1)
             ->orderByDesc('ServicePeriodEnd')
             ->select('ServicePeriodEnd')
             ->first();
@@ -217,7 +216,6 @@ class BillsController extends AppBaseController
         if ($latestMonth != null) {
             $totalStats = DB::connection('sqlsrvbilling')
                 ->table('Bills')
-                ->limit(1)
                 ->whereRaw("ServicePeriodEnd='" . $latestMonth->ServicePeriodEnd . "'")
                 ->select(
                     DB::raw("SUM(PowerKWH) AS TotalKwh"),
@@ -233,6 +231,55 @@ class BillsController extends AppBaseController
             $data['LatestMonth'] = null;
             $data['TotalStats'] = [];
         }
+
+        return response()->json($data, 200);
+    }
+
+    public function getBillsAnnualStats(Request $request) {
+        $year = $request['Year'];
+
+        $thisYearData = [];
+        $prevYearData = [];
+        $labels = [];
+
+        for ($i=1; $i<13; $i++) {
+            $thisYear = date('Y-m-d', strtotime($year . '-' . $i . '-01'));
+            $prevYear = date('Y-m-d', strtotime((intval($year)-1) . '-' . $i . '-01'));
+            
+            $tyQuery = DB::connection('sqlsrvbilling')
+                ->table('Bills')
+                ->whereRaw("ServicePeriodEnd='" . $thisYear . "'")
+                ->select(
+                    DB::raw("'" . $thisYear . "' AS Period"),
+                    DB::raw("SUM(PowerKWH) AS TotalKwh"),
+                    DB::raw("SUM(NetAmount) AS TotalAmount"),
+                    DB::raw("COUNT(AccountNumber) AS TotalBilledAccounts"),
+                    DB::raw("SUM(DistributionDemandAmt + DistributionSystemAmt + SupplyRetailCustomerAmt + SupplySystemAmt + MeteringRetailCustomerAmt + MeteringSystemAmt + LifelineSubsidyAmt) AS TotalDSM"),
+                )
+                ->first();
+
+            $pyQuery = DB::connection('sqlsrvbilling')
+                ->table('Bills')
+                ->whereRaw("ServicePeriodEnd='" . $prevYear . "'")
+                ->select(
+                    DB::raw("'" . $prevYear . "' AS Period"),
+                    DB::raw("SUM(PowerKWH) AS TotalKwh"),
+                    DB::raw("SUM(NetAmount) AS TotalAmount"),
+                    DB::raw("COUNT(AccountNumber) AS TotalBilledAccounts"),
+                    DB::raw("SUM(DistributionDemandAmt + DistributionSystemAmt + SupplyRetailCustomerAmt + SupplySystemAmt + MeteringRetailCustomerAmt + MeteringSystemAmt + LifelineSubsidyAmt) AS TotalDSM"),
+                )
+                ->first();
+
+            array_push($thisYearData, $tyQuery);
+            array_push($prevYearData, $pyQuery);
+            array_push($labels, date('F', strtotime($thisYear)));
+        }
+
+        $data = [
+            'PreviousYear' => $prevYearData,
+            'ThisYear' => $thisYearData,
+            'Labels' => $labels,
+        ];
 
         return response()->json($data, 200);
     }
