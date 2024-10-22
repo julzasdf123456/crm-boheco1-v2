@@ -46,7 +46,7 @@
 
         {{-- APPLICATION AND ENERGIZATION TREND GRAPH --}}
         <div class="col-lg-6">            
-            <div class="card shadow-none" style="height: 40vh;">
+            <div class="card shadow-none" style="height: 48vh;">
                 <div class="card-header border-0">
                     <span class="card-title"><i class="fas fa-chart-area ico-tab"></i>Trend of Service Connection Applications and Energizations</span>
                 </div>
@@ -55,6 +55,20 @@
                 </div>
             </div>
         </div>
+
+        {{-- INSPECTION REPORTS --}}
+        <div class="col-lg-6">
+            <div class="card shadow-none" style="height: 48vh;">
+                <div class="card-header border-0">
+                    <div class="d-flex justify-content-between">
+                        <h3 class="card-title"><i class="fas fa-paste ico-tab"></i>Inspection Report</h3>
+                        <a class="btn btn-link-muted" href="{{ route('serviceConnections.inspection-full-report') }}">View Report</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="sales-chart" height="280" style="height: 280px;" width="764"></canvas>
+                </div>
+            </div>
     </div>
 </div>
 
@@ -168,6 +182,7 @@
             })
 
             getApplicationChartData()
+            inspectionsChart()
         })
 
         function getApplicationChartData() {
@@ -210,9 +225,9 @@
                             label: 'Received',
                             backgroundColor: 'rgba(196, 189, 93, .3)',
                             borderColor: '#c4bd5d',
-                            pointRadius: true,
+                            pointRadius: 3,
                             pointColor: '#3b8bba',
-                            pointStrokeColor: '##c4bd5d',
+                            pointStrokeColor: '#c4bd5d',
                             pointHighlightFill: '#fff',
                             pointHighlightStroke: '#c4bd5d',
                             data: applicationData
@@ -221,7 +236,7 @@
                             label: 'Energized',
                             backgroundColor: '#17bf87',
                             borderColor: '#17bf87',
-                            pointRadius: true,
+                            pointRadius: 3,
                             pointColor: '#17bf87',
                             pointStrokeColor: '#c1c7d1',
                             pointHighlightFill: '#fff',
@@ -263,6 +278,88 @@
                     console.log(error)
                 }
             })
+        }
+
+        function inspectionsChart() {
+            // INSPECTION CHART
+            $.ajax({
+                url : '{{ url("/home/get-inspection-report") }}',
+                    type: "GET",
+                    dataType : "json",
+                    success : function(response) {
+                        var labels = [];
+                        var data = [];
+                        $.each(response, function(index, element) {
+                            labels.push(response[index]['name']);
+                            data.push(response[index]['Total']);
+                        });
+
+                        // DISPLAY QUERY TO CHART
+                        'use strict'
+
+                        var ticksStyle = {
+                            fontColor: '#495057',
+                            fontStyle: 'bold'
+                        }
+
+                        var mode = 'index'
+                        var intersect = true
+                        var $salesChart = $('#sales-chart')
+                        // eslint-disable-next-line no-unused-vars
+                        var salesChart = new Chart($salesChart, {
+                            type: 'bar',
+                            data: {
+                            labels: labels,
+                            datasets: [
+                                    {
+                                        backgroundColor: 'rgba(23, 191, 135, .8)',
+                                        borderColor: '#17bf87',
+                                        data: data
+                                    },
+                                ]
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                tooltips: {
+                                    mode: mode,
+                                    intersect: intersect
+                                },
+                                hover: {
+                                    mode: mode,
+                                    intersect: intersect
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                scales: {
+                                    yAxes: [{
+                                        // display: false,
+                                        gridLines: {
+                                            display: true,
+                                            lineWidth: '4px',
+                                            color: 'rgba(0, 0, 0, .2)',
+                                            zeroLineColor: 'transparent'
+                                        },
+                                        ticks: $.extend({
+                                            beginAtZero: true,
+                                        }, ticksStyle)
+                                    }],
+                                    xAxes: [{
+                                        display: true,
+                                        gridLines: {
+                                            display: false
+                                        },
+                                        ticks: ticksStyle
+                                    }]
+                                }
+                            }
+                        })
+                    },
+                    error : function(error) {
+                        // alert(error);
+                        console.log('Server error!');
+                    }
+            }) 
         }
     </script>
 @endpush

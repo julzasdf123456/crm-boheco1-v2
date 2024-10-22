@@ -12,7 +12,7 @@
             <div class="card shadow-none">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="card-title">Ticket Crew Monitoring</h3>
+                        <h3 class="card-title"><i class="fas fa-hard-hat ico-tab"></i>Ticket Crew Monitoring</h3>
 
                         <div class="card-tools">
                             <div class="form-group">

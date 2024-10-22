@@ -457,7 +457,7 @@
 
         // INSPECTION CHART
         $.ajax({
-            url : '/home/get-inspection-report',
+            url : '{{ url("/home/get-inspection-report") }}',
                 type: "GET",
                 dataType : "json",
                 success : function(response) {
