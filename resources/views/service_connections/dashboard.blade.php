@@ -308,22 +308,6 @@
             })
         }
 
-        // $("#main").HTMLSVGconnect({
-        //     stroke: "#787878",
-        //     strokeWidth: 4,
-        //     orientation: "auto",
-        //     paths: [
-        //         { start: "#receivedDash", end: "#inspectionDash"},
-        //         { start: "#inspectionDash", end: "#approvedDash"},
-        //         { start: "#receivedDash", end: "#powerLoadInspectionDash"},
-        //         { start: "#approvedDash", end: "#meteringDash"},
-        //         { start: "#meteringDash", end: "#energizationDash"},
-        //         { start: "#powerLoadInspectionDash", end: "#bomDash"},
-        //         { start: "#bomDash", end: "#transformerDash"},
-        //         { start: "#transformerDash", end: "#inspectionDash"},
-        //     ]
-        // });
-
         // NEW CONNECTIONS DASH
         $.ajax({
             url : '/home/get-new-service-connections',
@@ -563,7 +547,7 @@
         }
 
         $.ajax({
-            url : '/service_connections/fetch-application-count-via-status',
+            url : '{{ url("/service_connections/fetch-application-count-via-status") }}',
             type : 'GET',
             success : function(res) {
                 var applicationData = []

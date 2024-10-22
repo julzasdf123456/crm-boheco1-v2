@@ -44,6 +44,17 @@
             </div>
         </div>
 
+        {{-- APPLICATION AND ENERGIZATION TREND GRAPH --}}
+        <div class="col-lg-6">            
+            <div class="card shadow-none" style="height: 40vh;">
+                <div class="card-header border-0">
+                    <span class="card-title"><i class="fas fa-chart-area ico-tab"></i>Trend of Service Connection Applications and Energizations</span>
+                </div>
+                <div class="card-body">
+                    <canvas id="application-chart-canvas" height="300" style="height: 300px;"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -138,7 +149,6 @@
                 }
             })
 
-
             /**
              * FOR ENERGIZATION 
              */
@@ -156,6 +166,103 @@
                     console.log('Server error!');
                 }
             })
+
+            getApplicationChartData()
         })
+
+        function getApplicationChartData() {
+            /**
+             * APPLICATION TREND CHART
+             */      
+            var applicationsChartCanvas = document.getElementById('application-chart-canvas').getContext('2d')
+            // $('#application-chart-canvas').get(0).getContext('2d');
+            //get previous 6 months
+            var prevMonths = [];
+            for (var i=0; i<6; i++) {
+                prevMonths.push(moment().subtract(i, 'months').format('MMM Y'))
+            }
+
+            $.ajax({
+                url : '{{ url("/service_connections/fetch-application-count-via-status") }}',
+                type : 'GET',
+                success : function(res) {
+                    var applicationData = []
+                    var energizationData = []
+
+                    applicationData.push(res[0]['ApplicationOne'])
+                    applicationData.push(res[0]['ApplicationTwo'])
+                    applicationData.push(res[0]['ApplicationThree'])
+                    applicationData.push(res[0]['ApplicationFour'])
+                    applicationData.push(res[0]['ApplicationFive'])
+                    applicationData.push(res[0]['ApplicationSix'])
+
+                    energizationData.push(res[0]['EnergizationOne'])
+                    energizationData.push(res[0]['EnergizationTwo'])
+                    energizationData.push(res[0]['EnergizationThree'])
+                    energizationData.push(res[0]['EnergizationFour'])
+                    energizationData.push(res[0]['EnergizationFive'])
+                    energizationData.push(res[0]['EnergizationSix'])
+                    
+                    var applicationChartData = {
+                        labels: prevMonths,
+                        datasets: [
+                        {
+                            label: 'Received',
+                            backgroundColor: '#c4bd5d',
+                            borderColor: '#c4bd5d',
+                            pointRadius: true,
+                            pointColor: '#3b8bba',
+                            pointStrokeColor: '##c4bd5d',
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: '#c4bd5d',
+                            data: applicationData
+                        },
+                        {
+                            label: 'Energized',
+                            backgroundColor: '#17bf87',
+                            borderColor: '#17bf87',
+                            pointRadius: true,
+                            pointColor: '#17bf87',
+                            pointStrokeColor: '#c1c7d1',
+                            pointHighlightFill: '#fff',
+                            pointHighlightStroke: '#0b855c',
+                            data: energizationData
+                        }
+                        ]
+                    }
+
+                    var applicationsChartOptions = {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            display: true
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
+                        }
+                    }
+
+                    // This will get the first returned node in the jQuery collection.
+                    // eslint-disable-next-line no-unused-vars
+                    var applicationsChart = new Chart(applicationsChartCanvas, { // lgtm[js/unused-local-variable]
+                        type: 'line',
+                        data: applicationChartData,
+                        options: applicationsChartOptions
+                    })
+                },
+                error : function(error) {
+                    console.log(error)
+                }
+            })
+        }
     </script>
 @endpush
