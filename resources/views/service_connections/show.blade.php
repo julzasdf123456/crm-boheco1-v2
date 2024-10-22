@@ -85,7 +85,7 @@ use Illuminate\Support\Facades\Auth;
                     </div>
                     <div class="card-body box-profile">
                         <div class="text-center">
-                            <img id="prof-img" class="profile-user-img img-fluid img-circle" src="" alt="User profile picture">
+                            <img id="prof-img" class="profile-user-img img-fluid img-circle" src="" alt="">
                         </div>
 
                         <h3 title="Go to Membership Profile" class="profile-username text-center"><a href="{{ $serviceConnections->MemberConsumerId != null ? route('memberConsumers.show', [$serviceConnections->MemberConsumerId]) : '' }}">{{ $serviceConnections->ServiceAccountName }}</a></h3>
@@ -301,6 +301,7 @@ use Illuminate\Support\Facades\Auth;
 @push('page_scripts')
     <script>
         $(document).ready(function() {
+            $('#page-title').html("<strong>{{ $serviceConnections->ServiceAccountName }}</strong>")
             // LOAD IMAGE
             $.ajax({
                 url : "{{ url('/member_consumer_images/get-image/') . $serviceConnections->MemberConsumerId }}",

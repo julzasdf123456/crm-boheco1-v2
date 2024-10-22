@@ -6,7 +6,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
+    {{-- <div class="row">
         <div class='col-lg-12 col-md-12'>
             <br>
             <h4 class="text-center display-5">Select Member Consumer</h4>
@@ -62,35 +62,21 @@
             </div>
         </div>
         
+    </div> --}}
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="app">
+                <select-mco></select-mco>
+            </div>
+            @vite('resources/js/app.js')
+        </div>
     </div>
 @endsection
 
 @push('page_scripts')
     <script>
         $(document).ready(function() {
-
-            // fetchConsumers('');
-
-            // function fetchConsumers(query = '') {
-            //     $.ajax({
-            //         url : "{{ route('serviceConnections.fetch-member-consumers') }}",
-            //         method : 'GET',
-            //         dataType : 'json',
-            //         data : { query : query },
-            //         success : function(data) {
-            //             $('#search-results').html(data.table_data);
-            //             // console.log(query);
-            //         }
-            //     });
-            // }
-
-            // $('#searchparam').on('keyup', function() {
-            //     fetchConsumers(this.value);
-            // });
-
-            // $('#searchBtn').on('click', function() {
-            //     fetchConsumers($('#searchparam').val());
-            // });            
+            $('#page-title').html("<span class='text-muted'>Select an </span> <strong>MCO</strong> <span class='text-muted'>to Proceed</span>")
         });
     </script>
 @endpush
