@@ -190,6 +190,7 @@ Route::get('/service_connections/forward-transformer-fees', [ServiceConnectionsC
 Route::get('/service_connections/forward-all-fees', [ServiceConnectionsController::class, 'forwardAllFees'])->name('serviceConnections.forward-all-fees');
 Route::get('/service_connections/search-all', [ServiceConnectionsController::class, 'searchAll'])->name('serviceConnections.search-all');
 Route::get('/service_connections/search-ajax', [ServiceConnectionsController::class, 'searchAjax'])->name('serviceConnections.search-ajax');
+Route::post('/service_connections/reforward-to-cashier', [ServiceConnectionsController::class, 'reforwardToCashier'])->name('serviceConnections.reforward-to-cashier');
 Route::resource('serviceConnections', App\Http\Controllers\ServiceConnectionsController::class);
 
 

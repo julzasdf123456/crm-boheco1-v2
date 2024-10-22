@@ -84,7 +84,7 @@ class ServiceConnectionInspectionsController extends AppBaseController
 
                 $serviceConnection = ServiceConnections::find($input['ServiceConnectionId']);
 
-                if (floatval($serviceConnection->LoadCategory) > 15) {
+                if (floatval($serviceConnection->LoadCategory) > 15 && $serviceConnection->ORNumber == null) {
                     $serviceConnection->Status = 'Forwarded To Planning';
 
                     // CREATE Timeframes
@@ -123,7 +123,7 @@ class ServiceConnectionInspectionsController extends AppBaseController
 
                 $serviceConnection = ServiceConnections::find($input['ServiceConnectionId']);
 
-                if (floatval($serviceConnection->LoadCategory) > 15) {
+                if (floatval($serviceConnection->LoadCategory) > 15 && $serviceConnection->ORNumber == null) {
                     $serviceConnection->Status = 'Forwarded To Planning';
 
                     // CREATE Timeframes

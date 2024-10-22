@@ -215,11 +215,13 @@ use Illuminate\Support\Facades\Auth;
                                 </table>
 
                                 @if ($totalTransactions != null && ($totalTransactions->TransformerForwarded!='Yes' | $totalTransactions->InstallationForwarded!='Yes' | $totalTransactions->RemittanceForwarded!='Yes'))
-                                    <div class="divider"></div>
-                                    <button id="forward-all" class="btn btn-sm btn-primary float-right">Forward All to Cashier <i class="fas fa-arrow-right"></i></button>
+                                    <button id="forward-all" class="btn btn-sm btn-primary float-right mt-2 mr-2">Forward All to Cashier <i class="fas fa-arrow-right"></i></button>
+                                @else
+                                    <button onclick="reforwardFees()" class="btn btn-sm btn-primary float-right mt-2 mr-2">Reforward to Cashier <i class="fas fa-arrow-right"></i></button>
                                 @endif
                                 
                             </div>
+                            <div class="card-footer"></div>
                         </div>
                     @endif
                 @endif
@@ -301,7 +303,7 @@ use Illuminate\Support\Facades\Auth;
         $(document).ready(function() {
             // LOAD IMAGE
             $.ajax({
-                url : '/member_consumer_images/get-image/' + "{{ $serviceConnections->MemberConsumerId }}",
+                url : "{{ url('/member_consumer_images/get-image/') . $serviceConnections->MemberConsumerId }}",
                 type : 'GET',
                 success : function(result) {
                     var data = JSON.parse(result)
@@ -467,6 +469,40 @@ use Illuminate\Support\Facades\Auth;
                 });
             })
         });
+
+        function reforwardFees() {
+            Swal.fire({
+                title: "Reforwared these fees to Cashier for payment?",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                denyButtonText: `No`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url : "{{ route('serviceConnections.reforward-to-cashier') }}",
+                        type : "POST",
+                        data : {
+                            _token : "{{ csrf_token() }}",
+                            ServiceConnectionId : "{{ $serviceConnections->id }}",
+                        },
+                        success : function(res) {
+                            Toast.fire({
+                                icon : 'success',
+                                text : 'All fees reforwarded to cashier!'
+                            })
+                            location.reload()
+                        },
+                        error : function(err) {
+                            Swal.fire({
+                                icon : 'error',
+                                text : 'Error forwarding all fees!'
+                            })
+                            console.log(err)
+                        }
+                    })
+                }
+            });
+        }
 
         function showBomModal() {
             $('#modal-installation-fee').modal({backdrop: 'static', keyboard: false}, 'show')
