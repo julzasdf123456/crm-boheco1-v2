@@ -208,7 +208,7 @@
                         datasets: [
                         {
                             label: 'Received',
-                            backgroundColor: 'rgba(196, 189, 93, .8)',
+                            backgroundColor: 'rgba(196, 189, 93, .3)',
                             borderColor: '#c4bd5d',
                             pointRadius: true,
                             pointColor: '#3b8bba',
