@@ -483,8 +483,8 @@ use Illuminate\Support\Facades\Auth;
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('tickets.index') }}"
-                class="nav-link {{ Request::is('tickets.index*') ? 'active' : '' }}">
+                <a href="{{ route('tickets.integrated-search') }}"
+                class="nav-link {{ Request::is('tickets.integrated-search*') ? 'active' : '' }}">
                     <i class="fas fa-clipboard-list nav-icon text-danger"></i><p>All Tickets</p>
                 </a>
             </li>

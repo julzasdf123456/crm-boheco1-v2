@@ -8,6 +8,7 @@ use App\Repositories\TownsRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use App\Models\ServiceConnectionCrew;
+use App\Models\Towns;
 use Flash;
 use Response;
 
@@ -159,5 +160,9 @@ class TownsController extends AppBaseController
         Flash::success('Towns deleted successfully.');
 
         return redirect(route('towns.index'));
+    }
+
+    public function getTowns(Request $request) {
+        return response()->json(Towns::orderBy('Town')->get(), 200);
     }
 }

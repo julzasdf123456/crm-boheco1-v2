@@ -82,10 +82,9 @@ Route::get('/member_consumers/get-search', [MemberConsumersController::class, 'g
 Route::post('/member_consumers/delete-one', [MemberConsumersController::class, 'deleteOne'])->name('memberConsumers.delete-one');
 Route::resource('memberConsumers', MemberConsumersController::class);
 
-
 Route::resource('memberConsumerTypes', App\Http\Controllers\MemberConsumerTypesController::class);
 
-
+Route::get('/towns/get-towns', [App\Http\Controllers\TownsController::class, 'getTowns'])->name('towns.get-towns');
 Route::resource('towns', App\Http\Controllers\TownsController::class);
 
 
@@ -473,6 +472,10 @@ Route::get('/tickets/revalidate-queue', [TicketsController::class, 'revalidateQu
 Route::get('/tickets/fleets', [TicketsController::class, 'fleets'])->name('tickets.fleets');
 Route::get('/tickets/get-fleets', [TicketsController::class, 'getFleets'])->name('tickets.get-fleets');
 Route::get('/tickets/get-fleet-data', [TicketsController::class, 'getFleetData'])->name('tickets.get-fleet-data');
+Route::get('/tickets/integrated-search', [TicketsController::class, 'integratedSearch'])->name('tickets.integrated-search');
+Route::get('/tickets/search-tickets', [TicketsController::class, 'searchTickets'])->name('tickets.search-tickets');
+Route::post('/tickets/delete-one', [TicketsController::class, 'deleteOne'])->name('tickets.delete-one');
+Route::get('/tickets/get-ticket-types', [TicketsController::class, 'getTicketTypes'])->name('tickets.get-ticket-types');
 Route::resource('tickets', TicketsController::class);
 
 

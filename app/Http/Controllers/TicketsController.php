@@ -5926,4 +5926,246 @@ class TicketsController extends AppBaseController
 
         return response()->json($data);
     }
+
+    public function integratedSearch(Request $request) {
+        return view('/tickets/integrated_search');
+    }
+
+    public function searchTickets(Request $request) {
+        $params = $request['search'];
+        $town = $request['Town'];
+        $ticketType = $request['TicketType'];
+
+        if ($params != null) {
+            // filter ticket type
+            if ($ticketType === 'All') {
+                // filter town
+                if ($town === 'All') {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No') AND (CRM_Tickets.id LIKE '%" . $params . "%' OR CRM_Tickets.ConsumerName LIKE '%" . $params . "%' OR CRM_Tickets.AccountNumber LIKE '%" . $params . "%' OR CurrentMeterNo LIKE '%" . $params . "%' OR NewMeterNo LIKE '%" . $params . "%')")                
+                        ->orderBy('CRM_Tickets.ConsumerName')
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                } else {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo', 
+                                        'CRM_Tickets.created_at',       
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Town='" . $town . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No') AND (CRM_Tickets.id LIKE '%" . $params . "%' OR CRM_Tickets.ConsumerName LIKE '%" . $params . "%' OR CRM_Tickets.AccountNumber LIKE '%" . $params . "%' OR CurrentMeterNo LIKE '%" . $params . "%' OR NewMeterNo LIKE '%" . $params . "%')")                
+                        ->orderBy('CRM_Tickets.ConsumerName')
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                }
+            } else {
+                if ($town === 'All') {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Ticket='" . $ticketType . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No') AND (CRM_Tickets.id LIKE '%" . $params . "%' OR CRM_Tickets.ConsumerName LIKE '%" . $params . "%' OR CRM_Tickets.AccountNumber LIKE '%" . $params . "%' OR CurrentMeterNo LIKE '%" . $params . "%' OR NewMeterNo LIKE '%" . $params . "%')")                
+                        ->orderBy('CRM_Tickets.ConsumerName')
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                } else {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo', 
+                                        'CRM_Tickets.created_at',       
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Town='" . $town . "' AND CRM_Tickets.Ticket='" . $ticketType . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No') AND (CRM_Tickets.id LIKE '%" . $params . "%' OR CRM_Tickets.ConsumerName LIKE '%" . $params . "%' OR CRM_Tickets.AccountNumber LIKE '%" . $params . "%' OR CurrentMeterNo LIKE '%" . $params . "%' OR NewMeterNo LIKE '%" . $params . "%')")                
+                        ->orderBy('CRM_Tickets.ConsumerName')
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                }
+            }
+        } else {
+            // filter ticket type
+            if ($ticketType === 'All') {
+                // filter town
+                if ($town === 'All') {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No')")
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                } else {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Town='" . $town . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No')")
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                }
+            } else {
+                if ($town === 'All') {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Ticket='" . $ticketType . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No')")
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                } else {
+                    $data = DB::table('CRM_Tickets')
+                        ->leftJoin('CRM_Barangays', 'CRM_Tickets.Barangay', '=', 'CRM_Barangays.id')                    
+                        ->leftJoin('CRM_Towns', 'CRM_Tickets.Town', '=', 'CRM_Towns.id')                
+                        ->leftJoin('CRM_TicketsRepository', 'CRM_Tickets.Ticket', '=', 'CRM_TicketsRepository.id')
+                        ->select('CRM_Tickets.id as id',
+                                        'CRM_Tickets.AccountNumber',
+                                        'CRM_Tickets.ConsumerName',
+                                        'CRM_TicketsRepository.Name as Ticket', 
+                                        'CRM_Tickets.Status',  
+                                        'CRM_Tickets.Sitio as Sitio', 
+                                        'CRM_Tickets.created_at', 
+                                        'CRM_Towns.Town as Town',
+                                        'CRM_Tickets.Office',  
+                                        'CRM_Tickets.CurrentMeterNo',
+                                        'CRM_Tickets.created_at',     
+                                        DB::raw("(SELECT TOP 1 tr.Name FROM CRM_TicketsRepository tr WHERE tr.id=CRM_TicketsRepository.ParentTicket) AS ParentTicket"), 
+                                        'CRM_Barangays.Barangay as Barangay')
+                        ->whereRaw("CRM_Tickets.Town='" . $town . "' AND CRM_Tickets.Ticket='" . $ticketType . "'")
+                        ->whereRaw("(CRM_Tickets.Trash IS NULL OR CRM_Tickets.Trash='No')")
+                        ->orderByDesc('CRM_Tickets.created_at')
+                        ->paginate(18);
+                }
+            }
+        }
+
+        return response()->json($data, 200);
+    }
+
+    public function deleteOne(Request $request) {
+        $id = $request['id'];
+        if(Auth::user()->hasAnyPermission(['tickets create', 'Super Admin'])) {
+            $tickets = $this->ticketsRepository->find($id);
+
+            $tickets->Trash = 'Yes';
+            $tickets->UserId = Auth::id();
+            $tickets->save();
+            // $this->ticketsRepository->delete($id);
+
+            // CREATE LOG
+            $ticketLog = new TicketLogs;
+            $ticketLog->id = IDGenerator::generateID();
+            $ticketLog->TicketId = $id;
+            $ticketLog->Log = "Ticket Moved to Trash";
+            $ticketLog->UserId = Auth::id();
+            $ticketLog->save();
+
+            return response()->json('ok', 200);
+        } else {
+            return response()->json("You're not authorized to delete a ticket", 403);
+        } 
+    }
+
+    public function getTicketTypes(Request $request) {
+        $parentTickets = DB::table('CRM_TicketsRepository')->whereNull('ParentTicket')->orderBy('Name')->get();
+
+        foreach ($parentTickets as $item) {
+            $item->Tickets = \App\Models\TicketsRepository::where('ParentTicket', $item->id)->get();
+        }
+
+        return response()->json($parentTickets, 200);
+    }
 }
