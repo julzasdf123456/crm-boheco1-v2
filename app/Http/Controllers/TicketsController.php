@@ -1072,7 +1072,7 @@ class TicketsController extends AppBaseController
 
     public function getTicketStatistics() {
         $startDate = date('Y-m-d', strtotime('first day of this month'));
-        $endDate = date('Y-m-d', strtotime('last day of this month'));
+        $endDate = date('Y-m-d', strtotime('first day of next month'));
 
         // GET AVERAGE
         $execTime = DB::table('CRM_Tickets')

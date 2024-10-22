@@ -61,7 +61,7 @@
             <div class="card shadow-none" style="height: 48vh;">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
-                        <h3 class="card-title"><i class="fas fa-paste ico-tab"></i>Inspection Report</h3>
+                        <h3 class="card-title"><i class="fas fa-paste ico-tab"></i>This Month's Inspection Trend</h3>
                         <a class="btn btn-link-muted" href="{{ route('serviceConnections.inspection-full-report') }}">View Report</a>
                     </div>
                 </div>
