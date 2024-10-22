@@ -199,4 +199,41 @@ class BillsController extends AppBaseController
         ]);
         
     }
+
+    public function dashboard(Request $request) {
+        return view('/bills/dashboard');
+    }
+
+    public function getLastestMonthsStatistics(Request $request) {
+        $latestMonth = DB::connection('sqlsrvbilling')
+            ->table('Bills')
+            ->limit(1)
+            ->orderByDesc('ServicePeriodEnd')
+            ->select('ServicePeriodEnd')
+            ->first();
+
+        $data = [];
+
+        if ($latestMonth != null) {
+            $totalStats = DB::connection('sqlsrvbilling')
+                ->table('Bills')
+                ->limit(1)
+                ->whereRaw("ServicePeriodEnd='" . $latestMonth->ServicePeriodEnd . "'")
+                ->select(
+                    DB::raw("SUM(PowerKWH) AS TotalKwh"),
+                    DB::raw("SUM(NetAmount) AS TotalAmount"),
+                    DB::raw("COUNT(AccountNumber) AS TotalBilledAccounts"),
+                    DB::raw("SUM(DistributionDemandAmt + DistributionSystemAmt + SupplyRetailCustomerAmt + SupplySystemAmt + MeteringRetailCustomerAmt + MeteringSystemAmt + LifelineSubsidyAmt) AS TotalDSM"),
+                )
+                ->first();
+
+            $data['LatestMonth'] = $latestMonth->ServicePeriodEnd != null ? date('Y-m-d', strtotime($latestMonth->ServicePeriodEnd)) : null;
+            $data['TotalStats'] = $totalStats;
+        } else {
+            $data['LatestMonth'] = null;
+            $data['TotalStats'] = [];
+        }
+
+        return response()->json($data, 200);
+    }
 }

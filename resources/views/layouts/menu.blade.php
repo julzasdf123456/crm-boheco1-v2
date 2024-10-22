@@ -749,27 +749,29 @@ use Illuminate\Support\Facades\Auth;
 
 {{-- SERVICE ACCOUNTS --}}
 @canany(['Super Admin', 'billing re-bill'])
-    <li class="nav-header">BILLING</li>
-    {{-- <li class="nav-item">
+    <li class="nav-header">BILLING & COLLECTION</li>
+    <li class="nav-item">
         <a href="{{ route('bills.dashboard') }}"
-           class="nav-link {{ Request::is('bills.dashboard*') ? 'active' : '' }}">                   
-           <i class="fas fa-chart-line nav-icon text-primary"></i><p>Dashboard
-           </p>
+            class="nav-link {{ Request::is('bills.dashboard*') ? 'active' : '' }}">                   
+            <i class="fas fa-chart-line nav-icon text-primary"></i>
+            <p>Dashboard
+                <span class="right badge badge-danger">new</span>
+            </p>
         </a>
-    </li> --}}
+    </li>
     <li class="nav-item has-treeview">
         <a href="#" class="nav-link">
             <i class="fas fa-file-invoice-dollar nav-icon text-primary"></i>
             <p>
-                Billing
+                Bills
                 <i class="fas fa-angle-left right"></i>
             </p>
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
                 <a href="{{ route('accountMasters.index') }}"
-                   class="nav-link {{ Request::is('accountMasters.index*') ? 'active' : '' }}">                   
-                   <i class="fas fa-user-circle nav-icon text-primary"></i><p>Consumer Accounts</p>
+                    class="nav-link {{ Request::is('accountMasters.index*') ? 'active' : '' }}">                   
+                    <i class="fas fa-user-circle nav-icon text-primary"></i><p>Consumer Accounts</p>
                 </a>
             </li>
             {{-- <li class="nav-item">
@@ -892,6 +894,15 @@ use Illuminate\Support\Facades\Auth;
             </li>
         </ul>
     </li> --}}
+@endcanany
+
+@canany(['Super Admin', 'teller create'])
+<li class="nav-item">
+    <a href="{{ route('disconnectionDatas.disco-teller-module') }}"
+    class="nav-link {{ Request::is('disconnectionDatas.disco-teller-module*') ? 'active' : '' }}">
+    <i class="fas fa-exclamation-circle nav-icon text-info"></i><p>Disconnection</p>
+    </a>
+</li>
 @endcanany
 
 {{-- BILLS --}}
@@ -1132,19 +1143,14 @@ use Illuminate\Support\Facades\Auth;
 
 <!-- TELLERING MENU -->
 @canany(['Super Admin', 'teller create'])
-    <li class="nav-header">COLLECTION</li>
+    {{-- <li class="nav-header">COLLECTION</li> --}}
     {{-- <li class="nav-item">
         <a href="{{ route('dCRSummaryTransactions.dashboard') }}"
         class="nav-link {{ Request::is('dCRSummaryTransactions.dashboard*') ? 'active' : '' }}">
         <i class="fas fa-chart-line nav-icon text-info"></i><p>Dashboard</p>
         </a>
     </li> --}}
-    <li class="nav-item">
-        <a href="{{ route('disconnectionDatas.disco-teller-module') }}"
-        class="nav-link {{ Request::is('disconnectionDatas.disco-teller-module*') ? 'active' : '' }}">
-        <i class="fas fa-exclamation-circle nav-icon text-info"></i><p>Disconnection</p>
-        </a>
-    </li>
+    
     {{-- <li class="nav-item has-treeview">
         <a href="#" class="nav-link">
             <i class="fas fa-credit-card nav-icon text-info"></i>
