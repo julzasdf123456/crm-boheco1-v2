@@ -13,12 +13,11 @@
                         <div class="col-md-4">
                             <div style="display: flex; flex-direction: row; column-gap: 5px;">
                                 <!-- ticket type -->
-                                <select class="custom-select select2" v-model="ticketType" style="width: 240px;" @change="searchTickets">
+                                <select class="form-control" v-model="ticketType" style="width: 240px;" @change="searchTickets">
                                     <option value="All">All</option>
                                     <optgroup v-for="pt in ticketTypes" :label="pt.Name">
                                         <option v-for="tt in pt.Tickets" :value="tt.id" :key="tt.id">{{ tt.Name }}</option>
                                     </optgroup>
-                                    
                                 </select>
                                 <!-- towns -->
                                 <select class="form-control" v-model="town" style="width: 160px;" @change="searchTickets">
@@ -246,7 +245,6 @@ export default {
             axios.get(`${ this.baseURL }/tickets/get-ticket-types`)
             .then(response => {
                 this.ticketTypes = response.data
-                console.log(this.ticketTypes)
             })
             .catch(error => {
                 this.toast.fire({
