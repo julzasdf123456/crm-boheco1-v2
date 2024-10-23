@@ -57,8 +57,16 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="mt-3">
-                        <Line :data="annualBillsGraphData" :options="lineOptions" />
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <p class="text-muted">Monthly Power Kilowatt-Hour Trend Comparison</p>
+                            <div class="mt-3">
+                                <Line :data="annualBillsGraphData" :options="lineOptions" style="height: 220px;"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <Pie :data="annualBillsPieData" :options="lineOptions"/>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer"></div>
@@ -75,7 +83,7 @@ import { Bootstrap4Pagination } from 'laravel-vue-pagination'
 import 'flatpickr/dist/flatpickr.css';
 import jquery from 'jquery';
 import Swal from 'sweetalert2';
-import { Line, Bar } from 'vue-chartjs'
+import { Line, Bar, Pie } from 'vue-chartjs'
 import { Chart as ChartJS,
         CategoryScale,
         LinearScale,
@@ -84,7 +92,8 @@ import { Chart as ChartJS,
         BarElement,
         Title,
         Tooltip,
-        Legend } from 'chart.js'
+        Legend, 
+        ArcElement} from 'chart.js'
 
 ChartJS.register(
     CategoryScale,
@@ -94,7 +103,8 @@ ChartJS.register(
     BarElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ArcElement
 )
 
 export default {
@@ -104,6 +114,7 @@ export default {
         'pagination' : Bootstrap4Pagination,
         Line,
         Bar,
+        Pie
     },
     data() {
         return {
@@ -142,6 +153,19 @@ export default {
                     }
                 ]
             },
+            // bills annual pie
+            annualBillsPieData : {
+                labels : [],
+                datasets : [
+                    {
+                        backgroundColor : '#afafaf',
+                        data: []
+                    }
+                ]
+            },
+            pieColors : [
+                '#069e5a', '#069e3e', '#0e9e06', '#5c9e06', '#8f9e06', '#d6d918', '#d99818', '#d96518', '#d92118', '#d91872', '#d918c2', '#af18d9', '#7818d9', '#3313c2', '#365ad1', '#369ed1'
+            ],
         }
     },
     methods : {
@@ -232,6 +256,7 @@ export default {
                 this.annualBillsStats = response.data
 
                 this.graphAnnualBillsStatistics()
+                this.pieAnnualBillsStatistics()
             })
             .catch(error => {
                 this.toast.fire({
@@ -249,7 +274,7 @@ export default {
                 thisYear.push(this.annualBillsStats.ThisYear[i].TotalKwh)
                 prevYear.push(this.annualBillsStats.PreviousYear[i].TotalKwh)
             }
-            console.log(thisYear)
+
             this.annualBillsGraphData = {
                 labels : this.annualBillsStats.Labels,
                 datasets : [
@@ -269,7 +294,30 @@ export default {
                     },
                 ]
             }
-        }
+        },
+        pieAnnualBillsStatistics() {
+            var lbls = []
+            var data = []
+            var cols = []
+            var pieRawStats = this.annualBillsStats.PieData
+            for(let i=0; i<pieRawStats.length; i++) {
+                lbls.push(pieRawStats[i].ConsumerType)
+                data.push(parseFloat(pieRawStats[i].Consumption))
+                cols.push(this.pieColors[i])
+            }
+
+            this.annualBillsPieData = {
+                labels : lbls,
+                datasets : [
+                    {
+                        backgroundColor : cols,
+                        data : data
+                    }
+                ]
+            }
+
+            console.log(this.annualBillsStats.PieData)
+        },
     },
     created() {
         

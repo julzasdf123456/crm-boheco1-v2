@@ -237,10 +237,22 @@ class BillsController extends AppBaseController
 
     public function getBillsAnnualStats(Request $request) {
         $year = $request['Year'];
+        $from = date('Y-m-d', strtotime($year . '-01-01'));
+        $to = date('Y-m-d', strtotime($year . '-12-31'));
 
         $thisYearData = [];
         $prevYearData = [];
         $labels = [];
+
+        $pieData = DB::connection('sqlsrvbilling')
+            ->table('Bills')
+            ->whereRaw("ServicePeriodEnd BETWEEN '" . $from . "' AND '" . $to . "'")
+            ->select(
+                "ConsumerType",
+                DB::raw("SUM(PowerKWH) AS Consumption"),   
+            )
+            ->groupBy("ConsumerType")
+            ->get();
 
         for ($i=1; $i<13; $i++) {
             $thisYear = date('Y-m-d', strtotime($year . '-' . $i . '-01'));
@@ -279,6 +291,7 @@ class BillsController extends AppBaseController
             'PreviousYear' => $prevYearData,
             'ThisYear' => $thisYearData,
             'Labels' => $labels,
+            'PieData' => $pieData,
         ];
 
         return response()->json($data, 200);
