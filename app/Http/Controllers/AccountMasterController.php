@@ -632,4 +632,94 @@ class AccountMasterController extends AppBaseController
 
         return response()->json('ok', 200);
     }
+
+    public function searchAccounts(Request $request) {
+        return view('/account_masters/search_accounts');
+    }
+
+    public function getSearch(Request $request) {
+        $params = $request['search'];
+
+        if (isset($params)) {
+            $data = DB::connection('sqlsrvbilling')
+                ->table('AccountMaster')
+                ->whereRaw("(AccountNumber LIKE '%" . $params . "%' OR ConsumerName LIKE '%" . $params . "%' OR MeterNumber LIKE '%" . $params . "%')")
+                ->orderBy('ConsumerName')
+                ->paginate(15);
+        } else {
+            $data = DB::connection('sqlsrvbilling')
+                ->table('AccountMaster')
+                ->orderBy('AccountNumber')
+                ->paginate(15);
+        }
+
+        return response()->json($data, 200);
+    }
+
+    public function viewAccount($accountNumber) {
+        return view('/account_masters/view_account', [
+            'accountNumber' => $accountNumber,
+        ]);
+    }
+
+    public function getAccountInformation(Request $request) {
+        $accountNumber = $request['AccountNumber'];
+
+        $accountData = DB::connection('sqlsrvbilling')
+            ->table('AccountMaster')
+            // ->leftJoin('AccountMasterExtension', function($join) {
+            //     $join->on('AccountMaster.AccountNumber', '=', 'AccountMasterExtension.AccountNumber');
+            // })
+            ->whereRaw("AccountMaster.AccountNumber='" . $accountNumber . "'")
+            ->first();
+
+        $meterInfo = Meters::where('MeterNumber', $accountData != null ? $accountData->MeterNumber : '')->first();
+
+        return response()->json([
+            'AccountData' => $accountData,
+            'MeterInfo' => $meterInfo,
+        ], 200);
+    }
+
+    public function getBillsLedger(Request $request) {
+        $accountNumber = $request['AccountNumber'];
+
+        $billsLedger = DB::connection('sqlsrvbilling')
+            ->table('Bills')
+            ->leftJoin('PaidBills', function($join) {
+                $join->on('Bills.AccountNumber', '=', 'PaidBills.AccountNumber')
+                    ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
+            })
+            ->whereRaw("Bills.AccountNumber='" . $accountNumber . "'")
+            ->select(
+                "Bills.*",
+                "PaidBills.Teller",
+                "PaidBills.ORNumber",
+                "PaidBills.PostingDate"
+            )
+            ->orderByDesc('Bills.ServicePeriodEnd')
+            ->paginate(15);
+
+        $account = AccountMaster::where('AccountNumber', $accountNumber)->first();
+        $meterInfo = Meters::where('MeterNumber', $account != null ? $account->MeterNumber : '')->first();
+
+        return response()->json([
+            'BillsLedger' => $billsLedger,
+            'MeterInfo' => $meterInfo,
+        ], 200);
+    }
+
+    public function getReadingHistory(Request $request) {
+        $accountNumber = $request['AccountNumber'];
+
+        $readings = DB::connection('sqlsrvbilling')
+            ->table('Readings')
+            ->whereRaw("AccountNumber='" . $accountNumber . "'")
+            ->orderByDesc('ServicePeriodEnd')
+            ->paginate(15);
+
+        return response()->json([
+            'Readings' => $readings,
+        ], 200);
+    }
 }

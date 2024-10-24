@@ -14,6 +14,7 @@ use App\Http\Controllers\DisconnectionDataController;
 use App\Http\Controllers\AdministrativeController;
 use App\Http\Controllers\MiscellaneousApplicationsController;
 use App\Http\Controllers\BillsController;
+use App\Http\Controllers\AccountMasterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -776,22 +777,28 @@ Route::resource('unbundledRatesExtensions', App\Http\Controllers\UnbundledRatesE
 
 Route::resource('billDeposits', App\Http\Controllers\BillDepositsController::class);
 
-Route::get('/account_masters/account-migration-step-one/{id}', [App\Http\Controllers\AccountMasterController::class, 'accountMigrationStepOne'])->name('accountMasters.account-migration-step-one');
-Route::get('/account_masters/get-available-account-numbers', [App\Http\Controllers\AccountMasterController::class, 'getAvailableAccountNumbers'])->name('accountMasters.get-available-account-numbers');
-Route::get('/account_masters/account-migration-step-two/{id}/{scId}', [App\Http\Controllers\AccountMasterController::class, 'accountMigrationStepTwo'])->name('accountMasters.account-migration-step-two');
-Route::get('/account_masters/account-migration-step-three/{id}/{scId}', [App\Http\Controllers\AccountMasterController::class, 'accountMigrationStepThree'])->name('accountMasters.account-migration-step-three');
-Route::get('/account_masters/get-neighboring-by-barangay', [App\Http\Controllers\AccountMasterController::class, 'getNeighboringByBarangay'])->name('accountMasters.get-neighboring-by-barangay');
-Route::get('/account_masters/get-neighboring-by-account', [App\Http\Controllers\AccountMasterController::class, 'getNeighboringByAccount'])->name('accountMasters.get-neighboring-by-account');
-Route::get('/account_masters/get-available-sequence-numbers', [App\Http\Controllers\AccountMasterController::class, 'getAvailableSequenceNumbers'])->name('accountMasters.get-available-sequence-numbers');
-Route::get('/account_masters/reports-new-accounts', [App\Http\Controllers\AccountMasterController::class, 'reportsNewAccounts'])->name('accountMasters.reports-new-accounts');
-Route::get('/account_masters/print-new-accounts/{from}/{to}', [App\Http\Controllers\AccountMasterController::class, 'printNewAccounts'])->name('accountMasters.print-new-accounts');
-Route::get('/account_masters/new-bapa-energized', [App\Http\Controllers\AccountMasterController::class, 'newEnergizedBapa'])->name('accountMasters.new-bapa-energized');
-Route::get('/account_masters/abrupt-increase-decrease', [App\Http\Controllers\AccountMasterController::class, 'abruptIncreaseDecrease'])->name('accountMasters.abrupt-increase-decrease');
-Route::get('/account_masters/get-abrupt-increase-decrease', [App\Http\Controllers\AccountMasterController::class, 'getAbruptIncreaseDecrease'])->name('accountMasters.get-abrupt-increase-decrease');
-Route::get('/account_masters/check-left-available-account-numbers', [App\Http\Controllers\AccountMasterController::class, 'getLeftAvailableAccountNumbers'])->name('accountMasters.check-left-available-account-numbers');
-Route::get('/account_masters/print-sdir/{office}', [App\Http\Controllers\AccountMasterController::class, 'printSDIR'])->name('accountMasters.print-sdir');
-Route::get('/account_masters/generate-unique-id', [App\Http\Controllers\AccountMasterController::class, 'generateUniqueID'])->name('accountMasters.generate-unique-id');
-Route::resource('accountMasters', App\Http\Controllers\AccountMasterController::class);
+Route::get('/account_masters/account-migration-step-one/{id}', [AccountMasterController::class, 'accountMigrationStepOne'])->name('accountMasters.account-migration-step-one');
+Route::get('/account_masters/get-available-account-numbers', [AccountMasterController::class, 'getAvailableAccountNumbers'])->name('accountMasters.get-available-account-numbers');
+Route::get('/account_masters/account-migration-step-two/{id}/{scId}', [AccountMasterController::class, 'accountMigrationStepTwo'])->name('accountMasters.account-migration-step-two');
+Route::get('/account_masters/account-migration-step-three/{id}/{scId}', [AccountMasterController::class, 'accountMigrationStepThree'])->name('accountMasters.account-migration-step-three');
+Route::get('/account_masters/get-neighboring-by-barangay', [AccountMasterController::class, 'getNeighboringByBarangay'])->name('accountMasters.get-neighboring-by-barangay');
+Route::get('/account_masters/get-neighboring-by-account', [AccountMasterController::class, 'getNeighboringByAccount'])->name('accountMasters.get-neighboring-by-account');
+Route::get('/account_masters/get-available-sequence-numbers', [AccountMasterController::class, 'getAvailableSequenceNumbers'])->name('accountMasters.get-available-sequence-numbers');
+Route::get('/account_masters/reports-new-accounts', [AccountMasterController::class, 'reportsNewAccounts'])->name('accountMasters.reports-new-accounts');
+Route::get('/account_masters/print-new-accounts/{from}/{to}', [AccountMasterController::class, 'printNewAccounts'])->name('accountMasters.print-new-accounts');
+Route::get('/account_masters/new-bapa-energized', [AccountMasterController::class, 'newEnergizedBapa'])->name('accountMasters.new-bapa-energized');
+Route::get('/account_masters/abrupt-increase-decrease', [AccountMasterController::class, 'abruptIncreaseDecrease'])->name('accountMasters.abrupt-increase-decrease');
+Route::get('/account_masters/get-abrupt-increase-decrease', [AccountMasterController::class, 'getAbruptIncreaseDecrease'])->name('accountMasters.get-abrupt-increase-decrease');
+Route::get('/account_masters/check-left-available-account-numbers', [AccountMasterController::class, 'getLeftAvailableAccountNumbers'])->name('accountMasters.check-left-available-account-numbers');
+Route::get('/account_masters/print-sdir/{office}', [AccountMasterController::class, 'printSDIR'])->name('accountMasters.print-sdir');
+Route::get('/account_masters/generate-unique-id', [AccountMasterController::class, 'generateUniqueID'])->name('accountMasters.generate-unique-id');
+Route::get('/account_masters/search-accounts', [AccountMasterController::class, 'searchAccounts'])->name('accountMasters.search-accounts');
+Route::get('/account_masters/get-search', [AccountMasterController::class, 'getSearch'])->name('accountMasters.get-search');
+Route::get('/account_masters/view-account/{accountNumber}', [AccountMasterController::class, 'viewAccount'])->name('accountMasters.view-account');
+Route::get('/account_masters/get-account-information', [AccountMasterController::class, 'getAccountInformation'])->name('accountMasters.get-account-information');
+Route::get('/account_masters/get-bills-ledger', [AccountMasterController::class, 'getBillsLedger'])->name('accountMasters.get-bills-ledger');
+Route::get('/account_masters/get-reading-history', [AccountMasterController::class, 'getReadingHistory'])->name('accountMasters.get-reading-history');
+Route::resource('accountMasters', AccountMasterController::class);
 
 
 Route::resource('barangayProxies', App\Http\Controllers\BarangayProxiesController::class);

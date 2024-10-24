@@ -61,11 +61,14 @@
                         <div class="col-lg-8">
                             <p class="text-muted">Monthly Power Kilowatt-Hour Trend Comparison</p>
                             <div class="mt-3">
-                                <Line :data="annualBillsGraphData" :options="lineOptions" style="height: 220px;"/>
+                                <Line :data="annualBillsGraphData" :options="lineOptions" style="height: 290px;"/>
                             </div>
                         </div>
                         <div class="col-lg-4">
-                            <Pie :data="annualBillsPieData" :options="lineOptions"/>
+                            <p class="text-muted">Year-round Breakdown of Consumption by Consumer Type</p>
+                            <div class="mt-3">
+                                <Pie :data="annualBillsPieData" :options="lineOptions"/>
+                            </div>
                         </div>
                     </div>
                 </div>

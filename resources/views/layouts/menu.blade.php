@@ -769,8 +769,8 @@ use Illuminate\Support\Facades\Auth;
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{{ route('accountMasters.index') }}"
-                    class="nav-link {{ Request::is('accountMasters.index*') ? 'active' : '' }}">                   
+                <a href="{{ route('accountMasters.search-accounts') }}"
+                    class="nav-link {{ Request::is('accountMasters.search-accounts*') ? 'active' : '' }}">                   
                     <i class="fas fa-user-circle nav-icon text-primary"></i><p>Consumer Accounts</p>
                 </a>
             </li>

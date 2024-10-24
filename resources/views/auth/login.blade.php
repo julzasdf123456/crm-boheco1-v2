@@ -31,73 +31,112 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link rel="stylesheet" href="{{ URL::asset('css/style.css'); }}">
 
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
+<style>
+    body {
+        background-image: 
+            linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(255, 255, 255, 0)),
+            url("{{ URL::asset('imgs/login-img.JPG') }}");
+        background-size: cover;      /* Ensures the image covers the entire background */
+        background-position: center; /* Centers the image */
+        background-repeat: no-repeat;
+        padding: 0px 30px 30px 100px;;
+        display: flex;
+        height: 100dvh;
+        align-items: center;
+    }
+
+    .login-card {
+        width: 24%;
+    }
+
+    @media screen and (max-width: 1710px) {
+        /* Select <p> elements and set display to none */
+        body {
+            padding-left: 5%;
+        }
+
+        .login-card {
+            width: 30%;
+        }
+    }
+
+    @media screen and (max-width: 1440px) {
+        /* Select <p> elements and set display to none */
+        .login-card {
+            width: 40%;
+        }
+    }
+
+    @media screen and (max-width: 1020px) {
+        /* Select <p> elements and set display to none */
+        .login-card {
+            width: 50%;
+        }
+    }
+
+    @media screen and (max-width: 720px) {
+        /* Select <p> elements and set display to none */
+        .login-card {
+            width: 100% !important;
+        }
+    }
+</style>
+<body>
+<div class="login-card">
     <div class="login-logo">
-        <a href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
+        <a class=" text-white" href="{{ url('/home') }}"><b>{{ config('app.name') }}</b></a>
     </div>
-
+    
     <!-- /.login-logo -->
-
+    
     <!-- /.login-box-body -->
-    <div class="card">
-        <div class="card-body login-card-body">
+    <div class="card shadow-soft">
+        <div class="card-body">
             <p class="login-box-msg">Sign in to start your session</p>
-
+    
             <form method="post" action="{{ url('/login') }}">
                 @csrf
-
+    
                 <div class="input-group mb-3">
                     <input type="text"
-                           name="username"
-                           value="{{ old('username') }}"
-                           placeholder="Username"
-                           class="form-control @error('username') is-invalid @enderror">
-                    <div class="input-group-append">
-                        <div class="input-group-text"><span class="fas fa-envelope"></span></div>
-                    </div>
+                            name="username"
+                            value="{{ old('username') }}"
+                            placeholder="Username"
+                            class="form-control @error('username') is-invalid @enderror" autofocus>
                     @error('username')
                     <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>
-
+    
                 <div class="input-group mb-3">
                     <input type="password"
-                           name="password"
-                           placeholder="Password"
-                           class="form-control @error('password') is-invalid @enderror">
-                    <div class="input-group-append">
-                        <div class="input-group-text">
-                            <span class="fas fa-lock"></span>
-                        </div>
-                    </div>
+                            name="password"
+                            placeholder="Password"
+                            class="form-control @error('password') is-invalid @enderror">
                     @error('password')
                     <span class="error invalid-feedback">{{ $message }}</span>
                     @enderror
-
+    
                 </div>
-
-                <div class="row">
-                    <div class="col-4">
-                        <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                    </div>
-
-                </div>
+    
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
             </form>
-
+    
+            <div class="divider mt-3"></div>
+    
             <p class="mb-0">
-                <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
+                <a class="btn btn-link-muted" href="{{ route('register') }}" class="text-center">Register a new membership</a>
             </p>
-
-            <p class="mb-1">
+    
+            {{-- <p class="mb-1">
                 <a href="{{ route('password.request') }}">I forgot my password</a>
-            </p>
+            </p> --}}
         </div>
         <!-- /.login-card-body -->
     </div>
-
 </div>
 <!-- /.login-box -->
 

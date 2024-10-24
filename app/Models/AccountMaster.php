@@ -157,7 +157,7 @@ class AccountMaster extends Model
         'ConsumerAddress',
         'ConsumerType',
         'AccountStatus',
-        'BillingStatus'
+        'BillingStatus',
     ];
 
     /**

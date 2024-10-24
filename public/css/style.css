@@ -458,20 +458,26 @@ body.dark-mode .btn-link-muted:hover {
 
 .btn-floating {
     height: 40px !important;
-    border-radius: 20px;
+    border-radius: 50%;
     outline: none;
     border: 0px;
     padding-left: 20px;
     padding-right: 20px;
+    background-color: #ffffff;
     transition: background-color 0.3s ease;
 }
 
 a.btn-floating {
-    border-radius: 20px;
+    border-radius: 50%;
     outline: none;
     border: 0px;
     padding: 10px 20px 10px 20px;
     transition: background-color 0.3s ease;
+}
+
+body.dark-mode .btn-floating,
+body.dark-mode a.btn-floating  {
+    background-color: #3b3d3f;
 }
 
 .shadow {
