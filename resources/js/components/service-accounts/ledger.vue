@@ -46,7 +46,7 @@
                                     </a>
                                     <div class="dropdown-menu">
                                         <a class="dropdown-item"><i class="fas fa-clock ico-tab"></i>Move Due Date</a>
-                                        <a class="dropdown-item"><i class="fas fa-paper-plane ico-tab"></i>Send Bill via Email</a>
+                                        <button @click="createPDFandSendMail(moment(bill.ServicePeriodEnd).format('YYYY-MM-DD'))" class="dropdown-item"><i class="fas fa-paper-plane ico-tab"></i>Send Bill via Email</button>
                                         <a class="dropdown-item"><i class="fas fa-file-invoice-dollar ico-tab"></i>View Payment Details</a>
 
                                         <div class="divider"></div>
@@ -86,6 +86,7 @@ export default {
             moment : moment,
             baseURL : window.location.origin + axios.defaults.baseURL,
             imgURL : window.location.origin + axios.defaults.imgURL,
+            billPDFs : window.location.origin + axios.defaults.billPDFs,
             colorProfile : document.querySelector("meta[name='color-profile']").getAttribute('content'),
             tableInputTextColor : this.isNull(document.querySelector("meta[name='color-profile']").getAttribute('content')) ? 'text-dark' : 'text-white',
             accountNumber : document.querySelector("meta[name='accountNumber']").getAttribute('content'),
@@ -190,6 +191,51 @@ export default {
             }
 
             return pres - prev
+        },
+        createPDFandSendMail(period) {
+            axios.get(`${ this.baseURL }/bills/create-pdf-bill`, {
+                params: {
+                    BillingMonth : period,
+                    AccountNumber : this.accountNumber
+                }
+            }).then(response => {
+                // start forwarding to automailer.boheco1.com
+                const filePath = this.billPDFs + response.data
+
+                axios.get(filePath, {
+                    responseType: 'blob', // Fetch the file as a Blob
+                })
+                .then(res => {
+                    const formData = new FormData();
+                    formData.append("file", res.data, "SOA.pdf"); // Specify file name here
+
+                    // Add any additional parameters if needed
+                    formData.append("Subject", "TEST BILL");
+                    formData.append("Body", "TEST BILL");
+                    formData.append("Recipient", "julzasdf23456@gmail.com");
+
+                    // Send the POST request with FormData
+                    axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    })
+                    .then(rx => {
+                        alert("Success: " + response.data)
+                    })
+
+                    
+                })
+
+                
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon : 'error',
+                    title : 'Error sending mail!',
+                });
+                console.log(error.response)
+            });
         }
     },
     created() {

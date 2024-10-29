@@ -58,6 +58,7 @@ Route::get('/users/remove-roles/{id}', [UsersController::class, 'clearRoles'])->
 Route::post('/users/authenticate', [UsersController::class, 'authenticate'])->name('users.authenticate');
 Route::get('/users/switch-color-modes', [UsersController::class, 'switchColorModes'])->name('users.switch-color-modes');
 Route::get('/users/profile/{id}', [UsersController::class, 'profile'])->name('users.profile');
+Route::post('/users/update-password-admin', [UsersController::class, 'updatePasswordAdmin'])->name('users.update-password-admin');
 Route::resource('users', UsersController::class);
 
 Route::resource('roles', App\Http\Controllers\RoleController::class);
@@ -821,6 +822,9 @@ Route::get('/bills/show-bill/{acctno}/{period}', [BillsController::class, 'showB
 Route::get('/bills/dashboard', [BillsController::class, 'dashboard'])->name('bills.dashboard');
 Route::get('/bills/get-latest-month-statistics', [BillsController::class, 'getLastestMonthsStatistics'])->name('bills.get-latest-month-statistics');
 Route::get('/bills/get-bills-annual-stats', [BillsController::class, 'getBillsAnnualStats'])->name('bills.get-bills-annual-stats');
+Route::get('/bills/download-pdf/{acctNo}/{period}', [BillsController::class, 'downloadPDF'])->name('bills.download-pdf');
+Route::get('/bills/send-pdf-mail/{acctNo}/{period}', [BillsController::class, 'sendPDFMail'])->name('bills.send-pdf-mail');
+Route::get('/bills/create-pdf-bill', [BillsController::class, 'createPDFBill'])->name('bills.create-pdf-bill');
 Route::resource('bills', BillsController::class);
 
 

@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use Spatie\LaravelPdf\Facades\Pdf;
+use App\Mail\BillsMail;
+use Mail;
 use Flash;
 use Response;
 
@@ -295,5 +298,35 @@ class BillsController extends AppBaseController
         ];
 
         return response()->json($data, 200);
+    }
+
+    public function downloadPDF($accountNumber, $billingMonth) {
+        Pdf::view('/bills/bill_to_pdf')
+            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $billingMonth . ".pdf");
+
+        return redirect(route('accountMasters.view-account', [$accountNumber]));
+    }
+
+    public function sendPDFMail($accountNumber, $billingMonth) {
+        Pdf::view('/bills/bill_to_pdf')
+            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $billingMonth . ".pdf");
+
+        // send email
+        Mail::to('julzasdf123456@gmail.com')->send(new BillsMail([
+            'title' => 'The Title',
+            'body' => 'The Body',
+        ]));
+
+        return redirect(route('accountMasters.view-account', [$accountNumber]));
+    }
+
+    public function createPDFBill(Request $request) {
+        $accountNumber = $request['AccountNumber']; 
+        $billingMonth = $request['BillingMonth'];
+
+        Pdf::view('/bills/bill_to_pdf')
+            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $billingMonth . ".pdf");
+
+        return response()->json($accountNumber . "-" . $billingMonth . ".pdf", 200);
     }
 }
