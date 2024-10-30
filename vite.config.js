@@ -16,7 +16,7 @@ export default defineConfig({
     ],
     server: {
         proxy: {
-            '/api': {
+            '/bills': {
                 target: 'http://192.168.10.48', // Your Laravel server
                 changeOrigin: true,
                 secure: false,
