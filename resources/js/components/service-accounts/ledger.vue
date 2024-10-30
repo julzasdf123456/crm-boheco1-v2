@@ -215,8 +215,9 @@ export default {
                     formData.append("Recipient", "julzasdf23456@gmail.com");
 
                     // Send the POST request with FormData
-                    axios.post("https://automailer.boheco1.com/forward-bill.php", formData, {
+                    axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
                         headers: {
+                            'Access-Control-Allow-Origin': '*',
                             "Content-Type": "multipart/form-data",
                         },
                     })
