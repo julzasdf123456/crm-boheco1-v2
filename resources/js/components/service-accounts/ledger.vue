@@ -217,7 +217,6 @@ export default {
                     // Send the POST request with FormData
                     axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
                         headers: {
-                            'Access-Control-Allow-Origin': '*',
                             'Access-Control-Allow-Headers' : "Content-Type",
                             "Content-Type": "multipart/form-data",
                         },
