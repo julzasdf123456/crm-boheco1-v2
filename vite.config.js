@@ -14,4 +14,13 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        proxy: {
+            '/api': {
+                target: 'http://192.168.10.48', // Your Laravel server
+                changeOrigin: true,
+                secure: false,
+            },
+        },
+    },
 });
