@@ -349,4 +349,54 @@ class AccountMaster extends Model
             return null;
         }
     }
+
+    public static function getTypes($typeAbrev) {
+        if (in_array($typeAbrev, ['RI', 'RM', 'R', 'RS'])) {
+            return 'RESIDENTIAL';
+        } elseif (in_array($typeAbrev, ['CL', 'CS', 'CM', 'C'])) {
+            return 'COMMERCIAL';
+        } elseif (in_array($typeAbrev, ['P'])) {
+            return 'PUBLIC BUILDING';
+        } elseif (in_array($typeAbrev, ['B'])) {
+            return 'BAPA';
+        } elseif (in_array($typeAbrev, ['E'])) {
+            return 'ECA';
+        } elseif (in_array($typeAbrev, ['I'])) {
+            return 'INDUSTRIAL';
+        } elseif (in_array($typeAbrev, ['S'])) {
+            return 'STREET LIGHTING';
+        } else {
+            return 'UNCATHEGORIZED';
+        }
+    }
+
+    public static function validateConsumerTypes($type) {
+        if ($type === 'R') {
+            return 'RM';
+        } else {
+            return $type;
+        }
+    }
+
+    public static function getTotalBillTaxes($bill, $billXt) {
+        $billTaxes = 0;
+        $billXtTaxes = 0;
+        if ($billXt != null) {
+            $billXtTaxes = $billXt->GenerationVAT +
+                $billXt->TransmissionVAT +
+                $billXt->SLVAT +
+                $billXt->DistributionVAT +
+                $billXt->Item16 +
+                $billXt->Item17;
+        }
+
+        if ($bill != null) {
+            $billTaxes = $bill->FBHCAmt +
+                $bill->DAA_VAT +
+                $bill->ACRM_VAT +
+                $bill->OthersVAT;
+        }
+
+        return $billTaxes + $billXtTaxes;
+    }
 }

@@ -825,6 +825,7 @@ Route::get('/bills/get-bills-annual-stats', [BillsController::class, 'getBillsAn
 Route::get('/bills/download-pdf/{acctNo}/{period}', [BillsController::class, 'downloadPDF'])->name('bills.download-pdf');
 Route::get('/bills/send-pdf-mail/{acctNo}/{period}', [BillsController::class, 'sendPDFMail'])->name('bills.send-pdf-mail');
 Route::get('/bills/create-pdf-bill', [BillsController::class, 'createPDFBill'])->name('bills.create-pdf-bill');
+Route::get('/bills/test-view-pdf-bill/{acctNo}/{period}', [BillsController::class, 'testViewPDFBill'])->name('bills.test-view-pdf-bill');
 Route::resource('bills', BillsController::class);
 
 

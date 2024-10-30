@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\LaravelPdf\Enums\Unit;
+use Spatie\LaravelPdf\Enums\Format;
 use App\Mail\BillsMail;
 use Mail;
 use Flash;
@@ -322,11 +324,113 @@ class BillsController extends AppBaseController
 
     public function createPDFBill(Request $request) {
         $accountNumber = $request['AccountNumber']; 
-        $billingMonth = $request['BillingMonth'];
+        $period = $request['BillingMonth'];
 
-        Pdf::view('/bills/bill_to_pdf')
-            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $billingMonth . ".pdf");
+        $accountMaster = AccountMaster::where('AccountNumber', $accountNumber)->first();
+        $meterInfo = Meters::where('MeterNumber', $accountMaster != null ? $accountMaster->MeterNumber : '')->first();
+        $bill = Bills::where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $billExtension = DB::connection('sqlsrvbilling')
+            ->table('BillsExtension')
+            ->where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $rates = DB::connection('sqlsrvbilling')
+            ->table('UnbundledRates')
+            ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $ratesExtension = DB::connection('sqlsrvbilling')
+            ->table('UnbundledRatesExtension')
+            ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $arrears = DB::connection('sqlsrvbilling')
+            ->table('Bills')
+            ->whereRaw("AccountNumber='" . $accountNumber . "' AND AccountNumber NOT IN (SELECT AccountNumber FROM PaidBills WHERE AccountNumber=Bills.AccountNumber AND ServicePeriodEnd=Bills.ServicePeriodEnd) 
+                AND ServicePeriodEnd NOT IN ('" . $period . "')")
+            ->select(
+                DB::raw("COUNT(AccountNumber) AS ArrearsCount"),
+                DB::raw("SUM(NetAmount) AS ArrearsTotal"),
+            )
+            ->first();
+        $billsDcrRevisionView = DB::connection('sqlsrvbilling')
+            ->table('BillsForDCRRevision')
+            ->where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
 
-        return response()->json($accountNumber . "-" . $billingMonth . ".pdf", 200);
+        Pdf::view('/bills/bill_to_pdf', [
+                'period' => $period,
+                'accountNumber' => $accountNumber,
+                'accountMaster' => $accountMaster,
+                'meterInfo' => $meterInfo,
+                'bill' => $bill,
+                'rates' => $rates,
+                'billExtension' => $billExtension,
+                'ratesExtension' => $ratesExtension,
+                'arrears' => $arrears,
+                'billsDcrRevisionView' => $billsDcrRevisionView,
+            ])
+            ->format(Format::A4)
+            // ->paperSize(215.9, 330.2, 'mm')
+            ->margins(0, 0, 0, 0)
+            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $period . ".pdf");
+
+        return response()->json([
+            'File' => $accountNumber . "-" . $period . ".pdf",
+            'Email' => $accountMaster->Email,
+        ], 200);
+    }
+
+    public function testViewPDFBill($accountNumber, $period) {
+        $accountMaster = AccountMaster::where('AccountNumber', $accountNumber)->first();
+        $meterInfo = Meters::where('MeterNumber', $accountMaster != null ? $accountMaster->MeterNumber : '')->first();
+        $bill = Bills::where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $rates = DB::connection('sqlsrvbilling')
+            ->table('UnbundledRates')
+            ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $billExtension = DB::connection('sqlsrvbilling')
+            ->table('BillsExtension')
+            ->where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $ratesExtension = DB::connection('sqlsrvbilling')
+            ->table('UnbundledRatesExtension')
+            ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+        $arrears = DB::connection('sqlsrvbilling')
+            ->table('Bills')
+            ->whereRaw("AccountNumber='" . $accountNumber . "' AND AccountNumber NOT IN (SELECT AccountNumber FROM PaidBills WHERE AccountNumber=Bills.AccountNumber AND ServicePeriodEnd=Bills.ServicePeriodEnd) 
+                AND ServicePeriodEnd NOT IN ('" . $period . "')")
+            ->select(
+                DB::raw("COUNT(AccountNumber) AS ArrearsCount"),
+                DB::raw("SUM(NetAmount) AS ArrearsTotal"),
+            )
+            ->first();
+        $billsDcrRevisionView = DB::connection('sqlsrvbilling')
+            ->table('BillsForDCRRevision')
+            ->where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $period)
+            ->first();
+
+        return view('/bills/bill_to_pdf', [
+            'period' => $period,
+            'accountNumber' => $accountNumber,
+            'accountMaster' => $accountMaster,
+            'meterInfo' => $meterInfo,
+            'bill' => $bill,
+            'rates' => $rates,
+            'billExtension' => $billExtension,
+            'ratesExtension' => $ratesExtension,
+            'arrears' => $arrears,
+            'billsDcrRevisionView' => $billsDcrRevisionView,
+        ]);
     }
 }

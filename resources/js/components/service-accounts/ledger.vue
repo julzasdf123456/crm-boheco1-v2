@@ -103,6 +103,7 @@ export default {
             ledger : [],
             rawLedger : {},
             meterInfo : {},
+            emailNotifMessage : ''
         }
     },
     methods : {
@@ -193,6 +194,16 @@ export default {
             return pres - prev
         },
         createPDFandSendMail(period) {
+            this.emailNotifMessage = 'Generating bill to PDF...'
+            Swal.fire({
+                title : 'Sending...',
+                text : this.emailNotifMessage,
+                allowOutsideClick : false,
+                didOpen : () => {
+                    Swal.showLoading()
+                }
+            })
+
             axios.get(`${ this.baseURL }/bills/create-pdf-bill`, {
                 params: {
                     BillingMonth : period,
@@ -200,7 +211,16 @@ export default {
                 }
             }).then(response => {
                 // start forwarding to automailer.boheco1.com
-                const filePath = this.billPDFs + response.data
+                this.emailNotifMessage = 'PDF created. Sending to BOHECO I cloud platform...'
+                Swal.update({
+                    text : this.emailNotifMessage,
+                    allowOutsideClick : false,
+                    showCancelButton: false,
+                    showConfirmButton: false,
+                })
+
+                const filePath = this.billPDFs + response.data.File
+                const emails = response.data.Email
 
                 axios.get(filePath, {
                     responseType: 'blob', // Fetch the file as a Blob
@@ -214,6 +234,14 @@ export default {
                     formData.append("Body", "TEST BILL");
                     formData.append("Recipient", "julzasdf123456@gmail.com");
 
+                    this.emailNotifMessage = 'Sending email now...'
+                    Swal.update({
+                        text : this.emailNotifMessage,
+                        allowOutsideClick : false,
+                        showCancelButton: false,
+                        showConfirmButton: false,
+                    })
+
                     // Send the POST request with FormData
                     axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
                         headers: {
@@ -223,7 +251,12 @@ export default {
                         },
                     })
                     .then(rx => {
-                        alert("Success: " + response.data)
+                        Swal.close()
+
+                        Swal.fire({
+                            icon : 'success',
+                            title : 'Email sent!',
+                        });
                     })
                 })
             })

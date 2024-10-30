@@ -1,0 +1,22 @@
+.header-official {
+    width: 100%;       
+    object-fit: fill;
+}
+
+.bg-faint {
+    background-color: rgb(206, 221, 215);
+}
+
+.bill-body {
+    width: 100%;
+    margin: 0px !important;
+    padding: 0px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-items: center;
+}
+
+.indent-1 {
+    text-indent: 20px !important;
+}
