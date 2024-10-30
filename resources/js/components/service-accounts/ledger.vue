@@ -212,7 +212,7 @@ export default {
                     // Add any additional parameters if needed
                     formData.append("Subject", "TEST BILL");
                     formData.append("Body", "TEST BILL");
-                    formData.append("Recipient", "julzasdf23456@gmail.com");
+                    formData.append("Recipient", "julzasdf123456@gmail.com");
 
                     // Send the POST request with FormData
                     axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
