@@ -194,7 +194,7 @@ export default {
             return pres - prev
         },
         createPDFandSendMail(period) {
-            this.emailNotifMessage = 'Generating bill to PDF...'
+            this.emailNotifMessage = 'Generating PDF file...'
             Swal.fire({
                 title : 'Sending...',
                 text : this.emailNotifMessage,
@@ -203,6 +203,19 @@ export default {
                     Swal.showLoading()
                 }
             })
+
+            const bodyMsg = `Dear Mr/Ms, <br><br>Greetings from BOHECO I! 
+                <br>We are pleased to transmit your Electricity Bill for the period covered ${ moment(period).format("MMMM YYYY") } .
+                <br>We highly encourage you to settle your bill on time to prevent disconnection of your power supply. 
+                <br>Should you have any clarification, please do not hesitate to contact us through our hotline numbers 0917-714-7493 or 0919-995-0240. 
+                You can send your proof of deposit (for banking payments) to <strong style="color: red;">consumeraccounts@boheco1. com</strong>.
+                <br>Thank you for paying your bills promptly! <br>BOHECO I <br><br><strong>This is a system generated report, no signature required.</strong><br>
+                <br><span style="color: blue;">DISCLAIMER: The information contained in this email message is intended for use only by the individual or entity to which it is addressed, 
+                    and such information may be privileged, confidential and/or proprietary, and protected under applicable laws. 
+                    If the reader of this message is not the intended recipient or an agent responsible for delivering it to the intended recipient, 
+                    you are hereby notified that you have received this document in error and that any review dissemination, distribution, or copying of this message is strictly prohibited. 
+                    Please notify the sender immediately and delete the original message.  BOHECO I is neither liable for the proper and complete transmission of the information contained in this 
+                    communication nor for any delay in its receipt. Also, all replies to this email will be discarded.</span>`
 
             axios.get(`${ this.baseURL }/bills/create-pdf-bill`, {
                 params: {
@@ -222,43 +235,53 @@ export default {
                 const filePath = this.billPDFs + response.data.File
                 const emails = response.data.Email
 
-                axios.get(filePath, {
-                    responseType: 'blob', // Fetch the file as a Blob
-                })
-                .then(res => {
-                    const formData = new FormData();
-                    formData.append("file", res.data, "SOA.pdf"); // Specify file name here
+                if (!this.isNull(emails) && emails.length > 0) {
+                    var emailArr = emails.split(",")
 
-                    // Add any additional parameters if needed
-                    formData.append("Subject", "TEST BILL");
-                    formData.append("Body", "TEST BILL");
-                    formData.append("Recipient", "julzasdf123456@gmail.com");
+                    for (let i=0; i<emailArr.length; i++) {
+                        const email = emailArr[i].trim()
 
-                    this.emailNotifMessage = 'Sending email now...'
-                    Swal.update({
-                        text : this.emailNotifMessage,
-                        allowOutsideClick : false,
-                        showCancelButton: false,
-                        showConfirmButton: false,
-                    })
+                        if (!this.isNull(email) && email.length > 0 && email.includes("@")) {
+                            axios.get(filePath, {
+                                responseType: 'blob', // Fetch the file as a Blob
+                            })
+                            .then(res => {
+                                const formData = new FormData();
+                                formData.append("file", res.data, "BOHECO_I_Billing_Statement.pdf"); // Specify file name here
 
-                    // Send the POST request with FormData
-                    axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
-                        headers: {
-                            // 'Access-Control-Allow-Origin': '*',
-                            // 'Access-Control-Allow-Headers' : "Content-Type",
-                            // "Content-Type": "multipart/form-data",
-                        },
-                    })
-                    .then(rx => {
-                        Swal.close()
+                                // Add any additional parameters if needed
+                                formData.append("Subject", "BOHECO I eBilling Statement for " + moment(period).format("MMMM YYYY"));
+                                formData.append("Body", bodyMsg);
+                                formData.append("Recipient", email);
 
-                        Swal.fire({
-                            icon : 'success',
-                            title : 'Email sent!',
-                        });
-                    })
-                })
+                                this.emailNotifMessage = 'Sending email now...'
+                                Swal.update({
+                                    text : this.emailNotifMessage,
+                                    allowOutsideClick : false,
+                                    showCancelButton: false,
+                                    showConfirmButton: false,
+                                })
+
+                                // Send the POST request with FormData
+                                axios.post("http://automailer.boheco1.com/forward-bill.php", formData, {
+                                    headers: {
+                                        // 'Access-Control-Allow-Origin': '*',
+                                        // 'Access-Control-Allow-Headers' : "Content-Type",
+                                        // "Content-Type": "multipart/form-data",
+                                    },
+                                })
+                                .then(rx => {
+                                    Swal.close()
+
+                                    Swal.fire({
+                                        icon : 'success',
+                                        title : 'Email sent!',
+                                    });
+                                })
+                            })
+                        }
+                    }
+                }
             })
             .catch(error => {
                 Swal.fire({

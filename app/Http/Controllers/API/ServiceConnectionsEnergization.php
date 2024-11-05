@@ -139,6 +139,12 @@ class ServiceConnectionsEnergization extends Controller {
 
     public function createTimeFrames(Request $request) {
         // CREATE Timeframes
+        $scs = ServiceConnectionTimeframes::find($request['id']);
+        
+        if ($scs != null) {
+            $scs->delete();
+        }
+
         $timeFrame = new ServiceConnectionTimeframes;
         $timeFrame->id = $request['id'];
         $timeFrame->ServiceConnectionId = $request['ServiceConnectionId'];
