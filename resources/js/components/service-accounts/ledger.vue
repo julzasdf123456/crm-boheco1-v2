@@ -233,6 +233,7 @@ export default {
                 })
 
                 const filePath = this.billPDFs + response.data.File
+                console.log(filePath)
                 const emails = response.data.Email
 
                 if (!this.isNull(emails) && emails.length > 0) {

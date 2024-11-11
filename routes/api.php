@@ -97,3 +97,7 @@ Route::get('update-downloaded-sched', [DisconnectionAPI::class, 'updateDownloade
 Route::get('get-random-notification', [SMSNotificationsAPI::class, 'getRandomNotification']);
 Route::get('update-sms', [SMSNotificationsAPI::class, 'updateSMSNotification']);
 
+// AUTO EMAIL
+Route::get('send-unsent-email-bills', [OtherData::class, 'sendUnsentEmailBills']);
+Route::post('update-bills-email-sent', [OtherData::class, 'updateBillsEmailSent']);
+

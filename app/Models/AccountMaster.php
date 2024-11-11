@@ -387,14 +387,14 @@ class AccountMaster extends Model
                 $billXt->SLVAT +
                 $billXt->DistributionVAT +
                 $billXt->Item16 +
-                $billXt->Item17;
+                $billXt->Item17 +
+                $billXt->OthersVAT;
         }
 
         if ($bill != null) {
             $billTaxes = $bill->FBHCAmt +
                 $bill->DAA_VAT +
-                $bill->ACRM_VAT +
-                $bill->OthersVAT;
+                $bill->ACRM_VAT;
         }
 
         return $billTaxes + $billXtTaxes;

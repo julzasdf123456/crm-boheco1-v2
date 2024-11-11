@@ -33,7 +33,7 @@ class BillsController extends AppBaseController
 
     public function __construct(BillsRepository $billsRepo)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('sendUnsentEmailBills');
         $this->billsRepository = $billsRepo;
     }
 
@@ -432,5 +432,82 @@ class BillsController extends AppBaseController
             'arrears' => $arrears,
             'billsDcrRevisionView' => $billsDcrRevisionView,
         ]);
+    }
+
+    public function sendUnsentEmailBills(Request $request) {
+        $bill = DB::connection("sqlsrvbilling")
+            ->table("Bills")
+            ->leftJoin("AccountMaster", "AccountMaster.AccountNumber", "=", "Bills.AccountNumber")
+            // ->whereRaw("AccountMaster.Email IS NOT NULL AND Bills.EmailSent IS NULL")
+            ->whereRaw("AccountMaster.Email LIKE '%julzasdf%' AND Bills.EmailSent IS NULL")
+            ->select("Bills.*")
+            ->orderByDesc('ServicePeriodEnd')
+            ->first();
+
+        if ($bill != null) {
+            $accountNumber = $bill->AccountNumber;
+            $period = date('Y-m-d', strtotime($bill->ServicePeriodEnd));
+
+            $accountMaster = AccountMaster::where('AccountNumber', $accountNumber)->first();
+            $meterInfo = Meters::where('MeterNumber', $accountMaster != null ? $accountMaster->MeterNumber : '')->first();
+
+            $billExtension = DB::connection('sqlsrvbilling')
+                ->table('BillsExtension')
+                ->where('AccountNumber', $accountNumber)
+                ->where('ServicePeriodEnd', $period)
+                ->first();
+            $rates = DB::connection('sqlsrvbilling')
+                ->table('UnbundledRates')
+                ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+                ->where('ServicePeriodEnd', $period)
+                ->first();
+            $ratesExtension = DB::connection('sqlsrvbilling')
+                ->table('UnbundledRatesExtension')
+                ->where('ConsumerType', AccountMaster::validateConsumerTypes($accountMaster->ConsumerType))
+                ->where('ServicePeriodEnd', $period)
+                ->first();
+            $arrears = DB::connection('sqlsrvbilling')
+                ->table('Bills')
+                ->whereRaw("AccountNumber='" . $accountNumber . "' AND AccountNumber NOT IN (SELECT AccountNumber FROM PaidBills WHERE AccountNumber=Bills.AccountNumber AND ServicePeriodEnd=Bills.ServicePeriodEnd) 
+                    AND ServicePeriodEnd NOT IN ('" . $period . "')")
+                ->select(
+                    DB::raw("COUNT(AccountNumber) AS ArrearsCount"),
+                    DB::raw("SUM(NetAmount) AS ArrearsTotal"),
+                )
+                ->first();
+            $billsDcrRevisionView = DB::connection('sqlsrvbilling')
+                ->table('BillsForDCRRevision')
+                ->where('AccountNumber', $accountNumber)
+                ->where('ServicePeriodEnd', $period)
+                ->first();
+
+            Pdf::view('/bills/bill_to_pdf', [
+                    'period' => $period,
+                    'accountNumber' => $accountNumber,
+                    'accountMaster' => $accountMaster,
+                    'meterInfo' => $meterInfo,
+                    'bill' => $bill,
+                    'rates' => $rates,
+                    'billExtension' => $billExtension,
+                    'ratesExtension' => $ratesExtension,
+                    'arrears' => $arrears,
+                    'billsDcrRevisionView' => $billsDcrRevisionView,
+                ])
+                ->format(Format::A4)
+                // ->paperSize(215.9, 330.2, 'mm')
+                ->margins(0, 0, 0, 0)
+                ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $period . ".pdf");
+
+            return response()->json([
+                'File' => $accountNumber . "-" . $period . ".pdf",
+                'Email' => $accountMaster->Email,
+                'BillingMonth' => date('F Y', strtotime($period)),
+                'BillingMonthRaw' => date('Y-m-d', strtotime($period)),
+                'AccountName' => $accountMaster->ConsumerName,
+                'AccountNumber' => $accountNumber,
+            ], 200);
+        } else {
+            return response()->json('No unsent bill', 200);
+        }
     }
 }
