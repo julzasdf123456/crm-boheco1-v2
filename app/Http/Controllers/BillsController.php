@@ -361,6 +361,11 @@ class BillsController extends AppBaseController
             ->where('ServicePeriodEnd', $period)
             ->first();
 
+        $prevPeriod = date('Y-m-01', strtotime($period . ' -1 month'));
+        $billPrev = Bills::where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $prevPeriod)
+            ->first();
+
         Pdf::view('/bills/bill_to_pdf', [
                 'period' => $period,
                 'accountNumber' => $accountNumber,
@@ -372,6 +377,7 @@ class BillsController extends AppBaseController
                 'ratesExtension' => $ratesExtension,
                 'arrears' => $arrears,
                 'billsDcrRevisionView' => $billsDcrRevisionView,
+                'billPrev' => $billPrev,
             ])
             ->format(Format::A4)
             // ->paperSize(215.9, 330.2, 'mm')
@@ -420,6 +426,13 @@ class BillsController extends AppBaseController
             ->where('ServicePeriodEnd', $period)
             ->first();
 
+        $prevPeriod = date('Y-m-01', strtotime($period . ' -1 month'));
+        $billPrev = Bills::where('AccountNumber', $accountNumber)
+            ->where('ServicePeriodEnd', $prevPeriod)
+            ->first();
+
+        // dd($billPrev);
+
         return view('/bills/bill_to_pdf', [
             'period' => $period,
             'accountNumber' => $accountNumber,
@@ -431,6 +444,7 @@ class BillsController extends AppBaseController
             'ratesExtension' => $ratesExtension,
             'arrears' => $arrears,
             'billsDcrRevisionView' => $billsDcrRevisionView,
+            'billPrev' => $billPrev,
         ]);
     }
 
@@ -480,6 +494,11 @@ class BillsController extends AppBaseController
                 ->where('AccountNumber', $accountNumber)
                 ->where('ServicePeriodEnd', $period)
                 ->first();
+                
+            $prevPeriod = date('Y-m-01', strtotime($period . ' -1 month'));
+            $billPrev = Bills::where('AccountNumber', $accountNumber)
+                ->where('ServicePeriodEnd', $prevPeriod)
+                ->first();
 
             Pdf::view('/bills/bill_to_pdf', [
                     'period' => $period,
@@ -492,6 +511,7 @@ class BillsController extends AppBaseController
                     'ratesExtension' => $ratesExtension,
                     'arrears' => $arrears,
                     'billsDcrRevisionView' => $billsDcrRevisionView,
+                    'billPrev' => $billPrev,
                 ])
                 ->format(Format::A4)
                 // ->paperSize(215.9, 330.2, 'mm')

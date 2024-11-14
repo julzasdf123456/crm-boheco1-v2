@@ -241,6 +241,8 @@ export default {
 
                     for (let i=0; i<emailArr.length; i++) {
                         const email = emailArr[i].trim()
+                        // debug email
+                        // const email = 'julzasdf123456@gmail.com'
 
                         if (!this.isNull(email) && email.length > 0 && email.includes("@")) {
                             axios.get(filePath, {

@@ -52,7 +52,7 @@
 <div class="bill-body">
     {{-- <img src="{{ URL::asset('imgs/header_official_long.png') }}" class="header-official"> --}}
     <div class="header-official-bg">
-        <div style="padding: 280px 30px 0 30px;">
+        <div style="padding: 240px 30px 0 30px;">
             <div class="row">
                 <div class="col-md-8">
                     <p class="no-pads"><span class="text-muted">Account Number: </span><strong class="text-success">{{ $accountNumber }}</strong></p>
@@ -63,9 +63,12 @@
                 </div>
 
                 <div class="col-md-4">
-                    <p class="no-pads text-right" style="padding-right: 64px !important;">Billing Invoice</p>
-                    <p class="no-pads text-right text-success" style="font-size: 1.2em; padding-right: 64px !important;"><strong>BI1000000000000001</strong></p>
-                    <h3 class="text-right" style="padding-right: 64px !important;"><strong>{{ date('F Y', strtotime($period)) }}</strong></h3>
+                    <p class="no-pads text-right" style="padding-right: 9px !important;">Billing for</p>
+                    {{-- FOR BIR --}}
+                    {{-- <p class="no-pads text-right" style="padding-right: 64px !important;">Billing Invoice</p> --}}
+                    {{-- <p class="no-pads text-right text-success" style="font-size: 1.2em; padding-right: 64px !important;"><strong>BI1000000000000001</strong></p> --}}
+                    <h3 class="text-right" style="padding-right: 9px !important;"><strong>{{ date('F Y', strtotime($period)) }}</strong></h3>
+                    <p class="no-pads text-right" style="padding-right: 9px !important;">Bill No.: {{ $bill != null ? $bill->BillNumber : '-' }}</p>
                 </div>
             </div>
 
@@ -75,48 +78,99 @@
             <div class="table-responsive">
                 <div class="row">
                     <div class="col-md-9">
-                        <p class="no-pads text-muted text-sm">Bill Summary</p>
-                        <table class="table table-sm table-borderless" style="background-color: transparent !important;">
-                            <tbody style="background-color: transparent !important;">
-                                <tr>
-                                    <td class="text-right">Bill No.: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->BillNumber : '-' }}</td>
-                                    <td class="text-right">Date Start: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateFrom)) : '-' }}</td>
-                                    <td class="text-right">Add. KWH: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWH : '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Prev. Reading: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPreviousReading : '-' }}</td>
-                                    <td class="text-right">Date End: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateTo)) : '-' }}</td>
-                                    <td class="text-right">Demand:</td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->DemandKW : '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Pres. Reading: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPresentReading : '-' }}</td>
-                                    <td class="text-right">Due Date: </td>
-                                    <td style="padding-left: 9px !important;" class="text-danger"><strong>{{ $bill != null ? date('M d, Y', strtotime($bill->DueDate)) : '-' }}</strong></td>
+                        @if ($accountMaster->ComputeMode === 'NetMetered')
+                            <p class="no-pads text-muted text-sm">Bill Summary</p>
+                            <table class="table table-sm table-borderless" style="background-color: transparent !important;">
+                                <tbody style="background-color: transparent !important;">
+                                    <tr>
+                                        <td class="text-right">Date Start : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateFrom)) : '-' }}</td>
+                                        <td></td>
+                                        <td style="padding-left: 9px !important;"><strong>Received</strong></td>
+                                        <td style="padding-left: 9px !important;"><strong>Delivered</strong></td>
+                                        <td class="text-right">Add. KWH : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWH : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Date End : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateTo)) : '-' }}</td>
+                                        <td class="text-right">Prev. Reading : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPreviousReading : '-' }}</td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->NetPrevReading : '-' }}</td>
+                                        <td class="text-right">Demand :</td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->DemandKW : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Due Date : </td>
+                                        <td style="padding-left: 9px !important;" class="text-danger"><strong>{{ $bill != null ? date('M d, Y', strtotime($bill->DueDate)) : '-' }}</strong></td>
+                                        <td class="text-right">Pres. Reading : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPresentReading : '-' }}</td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->NetPresReading : '-' }}</td>
+                                        <td class="text-right">Add. Demand KW : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWDemand : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Multiplier : </td>
+                                        <td style="padding-left: 9px !important;">{{ $meterInfo != null ? $meterInfo->Multiplier : '-' }}</td>
+                                        <td class="text-right">kWH Used : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerKWH : '0.0' }}</td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->NetPowerKWH : '0.0' }}</td>
+                                        <td class="text-right">Coreloss : </td>
+                                        <td style="padding-left: 9px !important;">{{ $accountMaster != null ? $accountMaster->CoreLoss : '-' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @else
+                            <p class="no-pads text-muted text-sm">Bill Summary</p>
+                            <table class="table table-sm table-borderless" style="background-color: transparent !important;">
+                                <tbody style="background-color: transparent !important;">
+                                    <tr>
+                                        <td class="text-right">Date Start : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateFrom)) : '-' }}</td>
+                                        <td class="text-right">Prev. Reading : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPreviousReading : '-' }}</td>
+                                        <td class="text-right">Add. KWH : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWH : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Date End : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? date('M d, Y', strtotime($bill->ServiceDateTo)) : '-' }}</td>
+                                        <td class="text-right">Pres. Reading : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->PowerPresentReading : '-' }}</td>
+                                        <td class="text-right">Demand :</td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->DemandKW : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Due Date : </td>
+                                        <td style="padding-left: 9px !important;" class="text-danger"><strong>{{ $bill != null ? date('M d, Y', strtotime($bill->DueDate)) : '-' }}</strong></td>
 
-                                    <td class="text-right">Add. Demand KW: </td>
-                                    <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWDemand : '-' }}</td>
-                                </tr>
-                                <tr>
-                                    <td class="text-right">Multiplier : </td>
-                                    <td style="padding-left: 9px !important;">{{ $meterInfo != null ? $meterInfo->Multiplier : '-' }}</td>
-                                    <td></td>                                    
-                                    <td></td>
-                                    <td class="text-right">Coreloss: </td>
-                                    <td style="padding-left: 9px !important;">{{ $accountMaster != null ? $accountMaster->CoreLoss : '-' }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        <td class="text-right">Multiplier : </td>
+                                        <td style="padding-left: 9px !important;">{{ $meterInfo != null ? $meterInfo->Multiplier : '-' }}</td>
+                                        <td class="text-right">Add. Demand KW : </td>
+                                        <td style="padding-left: 9px !important;">{{ $bill != null ? $bill->AdditionalKWDemand : '-' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>   
+                                        <td></td>
+                                        <td></td>                                   
+                                        <td class="text-right">Coreloss : </td>
+                                        <td style="padding-left: 9px !important;">{{ $accountMaster != null ? $accountMaster->CoreLoss : '-' }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
                     </div>
                     <div class="col-md-3">
-                        <p class="no-pads text-right">Total kWH Used</p>
-                        <h4 class="no-pads text-right">{{ $bill != null ? $bill->PowerKWH : '0.0' }}</h4>
+                        @if ($accountMaster->ComputeMode === 'NetMetered')
+                            <p class="no-pads text-right">Solar Generation</p>
+                            <h4 class="no-pads text-right">{{ $bill != null ? $bill->NetPowerKWH : '0.0' }}</h4>
+                            <p class="no-pads text-right">Consumed from BOHECO I</p>
+                            <h4 class="no-pads text-right">{{ $bill != null ? $bill->PowerKWH : '0.0' }}</h4>
+                        @else
+                            <p class="no-pads text-right">Total kWH Used</p>
+                            <h4 class="no-pads text-right">{{ $bill != null ? $bill->PowerKWH : '0.0' }}</h4>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -398,6 +452,41 @@
                             <td></td>
                             <td class="text-right">{{ $billExtension != null ? (number_format($billExtension->Item7, 4)) : '0.00' }}</td>
                         </tr>
+
+                        {{-- NET METERING Charges --}}
+                        @if ($accountMaster->ComputeMode === 'NetMetered')
+                            <tr>
+                                <td colspan="4" style="padding-right: 25px !important;"><strong>Consumer Charges to BOHECO I</strong></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="padding-left: 25px !important;">Generation Charges (Delivered)</td>
+                                <td>Per kWH</td>
+                                <td class="text-right">{{ $rates != null ? (number_format($rates->GenerationSystemCharge, 4)) : '0.00' }}</td>
+                                <td class="text-right" style="padding-right: 25px !important;">{{ $bill != null ? (number_format($bill->NetGenerationAmount, 2)) : '0.00' }}</td>
+                                <td class="indent-1" style="padding-left: 25px !important; border-top: 1px solid #aeaeae;"><strong>Consumption from BOHECO I</strong></td>
+                                <td style="border-top: 1px solid #878787;"></td>
+                                <td style="border-top: 1px solid #878787;"></td>
+                                <td class="text-right" style="border-top: 1px solid #878787;">{{ $bill != null ? (number_format($bill->NetAmount, 2)) : '0.00' }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding-left: 25px !important;">Residual Credit Earned in Prior Months</td>
+                                <td class="text-right" style="padding-right: 25px !important;">{{ $billPrev != null ? ($billPrev->NetGenerationAmount != null && $billPrev->NetGenerationAmount < 0 ? ('(' . number_format($billPrev->NetGenerationAmount, 2) . ')') : '0.0') : '0.00' }}</td>
+                                <td colspan="3" class="indent-1" style="padding-left: 25px !important;"><strong>Less Total Generation</strong></td>
+                                <td class="text-right">{{ $bill != null ? ('(' . number_format($bill->NetGenerationAmount, 2) . ')') : '0.00' }}</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td colspan="3" class="indent-1" style="padding-left: 25px !important;"><strong>Less Total Residual Credit</strong></td>
+                                <td class="text-right">{{ $billPrev != null ? ($billPrev->NetMeteringNetAmount != null && floatval($billPrev->NetMeteringNetAmount) < 0 ? ('(' . number_format(abs($billPrev->NetMeteringNetAmount), 2) . ')') : '0.0') : '0.00' }}</td>
+                            </tr>
+                        @endif
                         
                         <tr>
                             <td colspan="4" style="padding-right: 25px !important;"><strong>Pass-Through Taxes</strong></td>
@@ -418,7 +507,11 @@
                             <td class="text-right">{{ $ratesExtension != null ? (number_format($ratesExtension->Item6, 4)) : '0.00' }}</td>
                             <td class="text-right" style="padding-right: 25px !important;">{{ $billExtension != null ? (number_format($billExtension->Item16, 2)) : '0.00' }}</td>
                             <td colspan="4" rowspan="2" class="text-right">
-                                <h2>₱ <strong>{{ $bill != null ? (number_format($bill->NetAmount, 2)) : '0.00' }}</strong></h2>
+                                @if ($accountMaster->ComputeMode === 'NetMetered')
+                                    <h2>₱ <strong>{{ $bill != null ? (number_format($bill->NetMeteringNetAmount, 2)) : '0.00' }}</strong></h2>
+                                @else 
+                                    <h2>₱ <strong>{{ $bill != null ? (number_format($bill->NetAmount, 2)) : '0.00' }}</strong></h2>
+                                @endif
                             </td>
                         </tr>
                         {{-- REAL PROPERTY TAX --}}
@@ -476,7 +569,7 @@
             @endif
 
             {{-- BIR FOOTER --}}
-            <div class="row mt-3">
+            {{-- <div class="row mt-3">
                 <div class="col-md-6">
                     <p class="no-pads text-sm">Generated By: BOHECO I System</p>
                     <p class="no-pads text-sm">Version: v2024</p>
@@ -489,7 +582,7 @@
                     <p class="no-pads text-sm">Date Issued:</p>
                     <p class="no-pads text-sm">Series Range: BI1000000000000001 to BI9999999999999999</p>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         {{-- footer --}}
