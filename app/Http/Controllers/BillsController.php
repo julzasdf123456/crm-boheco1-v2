@@ -452,8 +452,8 @@ class BillsController extends AppBaseController
         $bill = DB::connection("sqlsrvbilling")
             ->table("Bills")
             ->leftJoin("AccountMaster", "AccountMaster.AccountNumber", "=", "Bills.AccountNumber")
-            // ->whereRaw("AccountMaster.Email IS NOT NULL AND Bills.EmailSent IS NULL")
-            ->whereRaw("AccountMaster.Email LIKE '%julzasdf%' AND Bills.EmailSent IS NULL")
+            ->whereRaw("AccountMaster.Email IS NOT NULL AND Bills.EmailSent IS NULL AND Bills.ServicePeriodEnd > '2024-09-01'")
+            // ->whereRaw("AccountMaster.Email LIKE '%julzasdf%' AND Bills.EmailSent IS NULL")
             ->select("Bills.*")
             ->orderByDesc('ServicePeriodEnd')
             ->first();
