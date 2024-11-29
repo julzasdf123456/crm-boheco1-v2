@@ -581,23 +581,23 @@
         /**
          * METERING DASH AND MENU COUNTER
          * */
-        $.ajax({
-            url :"{{ route('home.get-unassigned-meters') }}", 
-            type: "GET",
-            dataType : "json",
-            success : function(response) {
-                // $.each(response, function(index, element) {
-                //     console.log(response[index]['id']);
-                // });
-                console.log(response.length);
-                $('#metering-unassigned').text(response.length);
-                $('#assign-badge-count').text(response.length);
-            },
-            error : function(error) {
-                // alert(error);
+        // $.ajax({
+        //     url :"{{ route('home.get-unassigned-meters') }}", 
+        //     type: "GET",
+        //     dataType : "json",
+        //     success : function(response) {
+        //         // $.each(response, function(index, element) {
+        //         //     console.log(response[index]['id']);
+        //         // });
+        //         console.log(response.length);
+        //         $('#metering-unassigned').text(response.length);
+        //         $('#assign-badge-count').text(response.length);
+        //     },
+        //     error : function(error) {
+        //         // alert(error);
                 
-            }
-        });
+        //     }
+        // });
 
         /**
          * NOTIFICATIONS
