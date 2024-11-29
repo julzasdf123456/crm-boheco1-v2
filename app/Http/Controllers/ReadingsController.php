@@ -17,6 +17,9 @@ use App\Models\Towns;
 use App\Models\BillingMeters;
 use App\Models\ServiceAccounts;
 use App\Models\IDGenerator;
+use App\Models\Meters;
+use App\Models\AccountMaster;
+use App\Models\MeterUpdateLogs;
 use Flash;
 use Response;
 
@@ -166,16 +169,7 @@ class ReadingsController extends AppBaseController
     }
 
     public function readingMonitor() {
-        $servicePeriods = DB::table('Billing_Readings')
-            ->select('ServicePeriod')
-            ->groupBy('ServicePeriod')
-            ->orderByDesc('ServicePeriod')
-            ->limit(30)
-            ->get();
-
-        return view('/readings/reading_monitor', [
-            'servicePeriods' => $servicePeriods,
-        ]);
+        return view('/readings/reading_monitor');
     }
 
     public function readingMonitorView($servicePeriod) {
@@ -1917,5 +1911,94 @@ class ReadingsController extends AppBaseController
         return view('/bills/print_bulk_old_format', [
             'bills' => $bills
         ]);
+    }
+
+    public function getDatesFromUploadHistory(Request $request) {
+        $data = DB::connection('sqlsrvbilling')
+            ->table('UploadHistory')
+            ->select(
+                DB::raw("TRY_CAST(ReadingDate AS Date) AS ReadingDate")
+            )
+            ->groupByRaw("TRY_CAST(ReadingDate AS Date)")
+            ->get();
+
+        return response()->json($data, 200);
+    }
+
+    public function getMeterReadersByDay(Request $request) {
+        $day = $request['Day'];
+
+        $meterReaders = DB::connection('sqlsrvbilling')
+            ->table('UploadHistory')
+            ->whereRaw("TRY_CAST(ReadingDate AS Date) = '" . $day . "'")
+            ->select(
+                "ReadBy"
+            )
+            ->groupBy("ReadBy")
+            ->orderBy("ReadBy")
+            ->get();
+
+        return response()->json($meterReaders, 200);
+    }
+
+    public function getReadingDataFromDay(Request $request) {
+        $day = $request['Day'];
+        $meterReader = $request['MeterReader'];
+
+        $data = DB::connection('sqlsrvbilling')
+            ->table('UploadHistory')
+            ->leftJoin('AccountMaster', 'UploadHistory.AccountNumber', '=', 'AccountMaster.AccountNumber')
+            ->whereRaw("TRY_CAST(ReadingDate AS Date) = '" . $day . "' AND ReadBy='" . $meterReader . "'")
+            ->select(
+                "UploadHistory.*",
+                "AccountMaster.ConsumerName",
+                "AccountMaster.ConsumerAddress",
+                "AccountMaster.MeterNumber",
+            )
+            ->orderByDesc("UploadHistory.Remarks")
+            ->orderBy("UploadHistory.SequenceNumber")
+            ->get();
+
+        return response()->json($data, 200);
+    }
+
+    public function updateMeterData(Request $request) {
+        $accountNumber = $request['AccountNumber'];
+        $newMeterNumber = $request['NewMeterNumber'];
+
+        // update account master
+        $account = AccountMaster::where('AccountNumber', $accountNumber)
+            ->first();
+
+        $oldMeterNo = null;
+
+        if ($account != null) {
+            $oldMeterNo = $account->MeterNumber;
+
+            $account->MeterNumber = $newMeterNumber;
+            $account->save();
+        }
+
+        // update meters
+        if ($oldMeterNo != null) {
+            $meter = Meters::where('MeterNumber', $oldMeterNo)
+                ->first();
+
+            if ($meter != null) {
+                $meter->MeterNumber = $newMeterNumber;
+                $meter->save();
+            }
+        }
+
+        // add log
+        MeterUpdateLogs::create([
+            'id' => IDGenerator::generateIDandRandString(),
+            'AccountNumber' => $accountNumber,
+            'OldMeterNumber' => $oldMeterNo,
+            'NewMeterNumber' => $newMeterNumber,
+            'UserUpdated' => Auth::user()->name,
+        ]);
+
+        return response()->json($account, 200);
     }
 }

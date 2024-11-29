@@ -10,6 +10,7 @@ import SearchAccounts from "./components/service-accounts/search-accounts.vue"
 import ViewAccount from "./components/service-accounts/view-account.vue"
 import Ledger from "./components/service-accounts/ledger.vue"
 import ReadingHistory from "./components/service-accounts/reading-history.vue"
+import ReadingMonitor from "./components/readings/reading-monitor.vue"
 
 const app = createApp({});
 app.component('search-all', SearchAll);
@@ -21,5 +22,6 @@ app.component('search-accounts', SearchAccounts);
 app.component('view-account', ViewAccount);
 app.component('ledger', Ledger);
 app.component('reading-history', ReadingHistory);
+app.component('reading-monitor', ReadingMonitor);
 
 app.mount("#app");

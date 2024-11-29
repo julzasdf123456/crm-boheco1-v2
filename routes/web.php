@@ -567,6 +567,10 @@ Route::get('/readings/search-print-bapa-reading-list', [App\Http\Controllers\Rea
 Route::get('/readings/print-bapa-reading-list-to-paper/{bapaName}/{period}', [App\Http\Controllers\ReadingsController::class, 'printBapaReadingListToPaper'])->name('readings.print-bapa-reading-list-to-paper');
 Route::get('/readings/print-bulk-new-format-mreader/{period}/{day}/{town}/{mreader}', [App\Http\Controllers\ReadingsController::class, 'printBulkBillNewFormatMreader'])->name('readings.print-bulk-new-format-mreader');
 Route::get('/readings/print-bulk-old-format-mreader/{period}/{day}/{town}/{mreader}', [App\Http\Controllers\ReadingsController::class, 'printBulkBillOldFormatMreader'])->name('readings.print-bulk-old-format-mreader');
+Route::get('/readings/get-dates-from-upload-history', [App\Http\Controllers\ReadingsController::class, 'getDatesFromUploadHistory'])->name('readings.get-dates-from-upload-history');
+Route::get('/readings/get-meter-readers-by-day', [App\Http\Controllers\ReadingsController::class, 'getMeterReadersByDay'])->name('readings.get-meter-readers-by-day');
+Route::get('/readings/get-reading-data-from-day', [App\Http\Controllers\ReadingsController::class, 'getReadingDataFromDay'])->name('readings.get-reading-data-from-day');
+Route::post('/readings/update-meter-data', [App\Http\Controllers\ReadingsController::class, 'updateMeterData'])->name('readings.update-meter-data');
 Route::resource('readings', App\Http\Controllers\ReadingsController::class);
 
 Route::resource('readingImages', App\Http\Controllers\ReadingImagesController::class);
@@ -908,3 +912,4 @@ Route::resource('miscellaneousApplications', MiscellaneousApplicationsController
 Route::resource('miscellaneousPayments', App\Http\Controllers\MiscellaneousPaymentsController::class);
 
 Route::resource('bills-readings', App\Http\Controllers\BillsReadingsController::class);
+Route::resource('meter-update-logs', App\Http\Controllers\MeterUpdateLogsController::class);

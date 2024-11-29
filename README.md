@@ -53,6 +53,11 @@ You can also check out our other paid products on [CodeCanyon](https://codecanyo
 
 - to Run: php artisan serve --host 192.168.0.124 --port 80
 
+### GENERATE MODELS FROM TABLE
+- php artisan infyom:scaffold Post --fromTable --table=posts --connection=server_name
+
+### New Dependencies
+- npm install v-calendar@next @popperjs/core
 
 ### User - Special Authentication
 

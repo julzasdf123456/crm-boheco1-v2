@@ -746,10 +746,17 @@ use Illuminate\Support\Facades\Auth;
         </a>
     </li>    
 @endcanany --}}
-
+<li class="nav-header">BILLING & COLLECTION</li>
+@canany(['Super Admin', 'billing re-bill'])
+<li class="nav-item">
+    <a href="{{ route('accountMasters.search-accounts') }}"
+        class="nav-link {{ Request::is('accountMasters.search-accounts*') ? 'active' : '' }}">                   
+        <i class="fas fa-user-circle nav-icon text-primary"></i><p>Consumer Accounts</p>
+    </a>
+</li>
+@endcanany
 {{-- SERVICE ACCOUNTS --}}
 @canany(['Super Admin', 'billing re-bill'])
-    <li class="nav-header">BILLING & COLLECTION</li>
     <li class="nav-item">
         <a href="{{ route('bills.dashboard') }}"
             class="nav-link {{ Request::is('bills.dashboard*') ? 'active' : '' }}">                   
@@ -768,12 +775,6 @@ use Illuminate\Support\Facades\Auth;
             </p>
         </a>
         <ul class="nav nav-treeview">
-            <li class="nav-item">
-                <a href="{{ route('accountMasters.search-accounts') }}"
-                    class="nav-link {{ Request::is('accountMasters.search-accounts*') ? 'active' : '' }}">                   
-                    <i class="fas fa-user-circle nav-icon text-primary"></i><p>Consumer Accounts</p>
-                </a>
-            </li>
             {{-- <li class="nav-item">
                 <a href="{{ route('serviceAccounts.termed-payment-accounts') }}"
                    class="nav-link {{ Request::is('serviceAccounts.termed-payment-accounts') ? 'active' : '' }}"
@@ -896,87 +897,9 @@ use Illuminate\Support\Facades\Auth;
     </li> --}}
 @endcanany
 
-@canany(['Super Admin', 'teller create'])
-<li class="nav-item">
-    <a href="{{ route('disconnectionDatas.disco-teller-module') }}"
-    class="nav-link {{ Request::is('disconnectionDatas.disco-teller-module*') ? 'active' : '' }}">
-    <i class="fas fa-exclamation-circle nav-icon text-info"></i><p>Disconnection</p>
-    </a>
-</li>
-@endcanany
-
-{{-- BILLS --}}
-{{-- @canany(['Super Admin', 'billing re-bill'])
-    <li class="nav-item has-treeview">
-        <a href="#" class="nav-link">
-            <i class="fas fa-wallet nav-icon text-primary"></i>
-            <p>
-                Bills
-                <i class="fas fa-angle-left right"></i>
-            </p>
-        </a>
-        <ul class="nav nav-treeview">
-            <li class="nav-item">
-                <a href="{{ route('bills.all-bills') }}"
-                   class="nav-link {{ Request::is('bills.all-bills*') ? 'active' : '' }}">
-                    <i class="fas fa-list nav-icon text-primary"></i><p>All Bills</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('rates.index') }}"
-                   class="nav-link {{ Request::is('rates*') ? 'active' : '' }}">
-                    <i class="fas fa-percentage nav-icon text-primary"></i><p>Rate Management</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('bills.unbilled-readings') }}"
-                   class="nav-link {{ Request::is('bills.unbilled-readings*') ? 'active' : '' }}">
-                    <i class="fas fa-exclamation-triangle nav-icon text-primary"></i><p>Unbilled Readings</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('bills.grouped-billing') }}"
-                   class="nav-link {{ Request::is('bills.grouped-billing*') ? 'active' : '' }}">
-                    <i class="fas fa-users nav-icon text-primary"></i><p>Grouped Billing</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('bills.bulk-print-bill') }}"
-                   class="nav-link {{ Request::is('bills.bulk-print-bill*') ? 'active' : '' }}">
-                    <i class="fas fa-print nav-icon text-primary"></i><p>Bulk Printing</p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('excemptions.index') }}"
-                   class="nav-link {{ Request::is('excemptions.index*') ? 'active' : '' }}">
-                    <i class="fas fa-circle nav-icon text-primary"></i><p>Excemptions
-                        <span class="right badge badge-danger">New</span>
-                    </p>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('bills.kwh-monitoring') }}"
-                   class="nav-link {{ Request::is('bills.kwh-monitoring*') ? 'active' : '' }}">
-                    <i class="fas fa-circle nav-icon text-primary"></i><p>Kwh Monitoring
-                        <span class="right badge badge-danger">New</span>
-                    </p>
-                </a>
-            </li>
-
-            <li class="nav-header">                
-                Others
-            </li>
-            <li class="nav-item">
-                <a href="{{ route('pendingBillAdjustments.index') }}"
-                   class="nav-link {{ Request::is('pendingBillAdjustments*') ? 'active' : '' }}">
-                   <i class="fas fa-circle nav-icon text-primary"></i><p>Zero Reading Adj.</p>
-                </a>
-            </li>
-        </ul>
-    </li>
-@endcanany --}}
+{{-- METER READING --}}
 @canany(['Super Admin', 'billing re-bill'])
-    {{-- <li class="nav-item has-treeview">
+    <li class="nav-item has-treeview">
         <a href="#" class="nav-link">
             <i class="fas fa-tachometer-alt nav-icon text-primary"></i>
             <p>
@@ -986,12 +909,12 @@ use Illuminate\Support\Facades\Auth;
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="{{ route('readingSchedules.reading-schedule-index') }}"
-                   class="nav-link {{ Request::is('readingSchedules.reading-schedule-index*') ? 'active' : '' }}">                   
-                   <i class="fas fa-calendar-week nav-icon text-primary"></i><p>M. Reader Scheduler</p>
+                <a href="{{ route('readings.reading-monitor') }}"
+                   class="nav-link {{ Request::is('readings.reading-monitor*') ? 'active' : '' }}">                   
+                   <i class="fas fa-street-view nav-icon text-primary"></i><p>Reading Monitor</p>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a href="{{ route('serviceAccounts.reading-account-grouper') }}"
                    class="nav-link {{ Request::is('serviceAccounts.reading-account-grouper*') ? 'active' : '' }}">                   
                    <i class="fas fa-calendar-alt nav-icon text-primary"></i><p>Reading Schedules</p>
@@ -1010,19 +933,13 @@ use Illuminate\Support\Facades\Auth;
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('readings.reading-monitor') }}"
-                   class="nav-link {{ Request::is('readings.reading-monitor*') ? 'active' : '' }}">                   
-                   <i class="fas fa-street-view nav-icon text-primary"></i><p>Reading Monitoring</p>
-                </a>
-            </li>
-            <li class="nav-item">
                 <a href="{{ route('meterReaderTrackNames.index') }}"
                    class="nav-link {{ Request::is('meterReaderTrackNames.index*') ? 'active' : '' }}">                   
                    <i class="fas fa-map-marked-alt nav-icon text-primary"></i><p>M. Reader Tracks</p>
                 </a>
-            </li>
+            </li> --}}
         </ul>
-    </li> --}}
+    </li>
 
     {{-- <li class="nav-item has-treeview">
         <a href="#" class="nav-link">
@@ -1105,6 +1022,86 @@ use Illuminate\Support\Facades\Auth;
         </ul>
     </li> --}}
 @endcanany
+
+@canany(['Super Admin', 'teller create'])
+<li class="nav-item">
+    <a href="{{ route('disconnectionDatas.disco-teller-module') }}"
+    class="nav-link {{ Request::is('disconnectionDatas.disco-teller-module*') ? 'active' : '' }}">
+    <i class="fas fa-exclamation-circle nav-icon text-info"></i><p>Disconnection</p>
+    </a>
+</li>
+@endcanany
+
+{{-- BILLS --}}
+{{-- @canany(['Super Admin', 'billing re-bill'])
+    <li class="nav-item has-treeview">
+        <a href="#" class="nav-link">
+            <i class="fas fa-wallet nav-icon text-primary"></i>
+            <p>
+                Bills
+                <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{{ route('bills.all-bills') }}"
+                   class="nav-link {{ Request::is('bills.all-bills*') ? 'active' : '' }}">
+                    <i class="fas fa-list nav-icon text-primary"></i><p>All Bills</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('rates.index') }}"
+                   class="nav-link {{ Request::is('rates*') ? 'active' : '' }}">
+                    <i class="fas fa-percentage nav-icon text-primary"></i><p>Rate Management</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('bills.unbilled-readings') }}"
+                   class="nav-link {{ Request::is('bills.unbilled-readings*') ? 'active' : '' }}">
+                    <i class="fas fa-exclamation-triangle nav-icon text-primary"></i><p>Unbilled Readings</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('bills.grouped-billing') }}"
+                   class="nav-link {{ Request::is('bills.grouped-billing*') ? 'active' : '' }}">
+                    <i class="fas fa-users nav-icon text-primary"></i><p>Grouped Billing</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('bills.bulk-print-bill') }}"
+                   class="nav-link {{ Request::is('bills.bulk-print-bill*') ? 'active' : '' }}">
+                    <i class="fas fa-print nav-icon text-primary"></i><p>Bulk Printing</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('excemptions.index') }}"
+                   class="nav-link {{ Request::is('excemptions.index*') ? 'active' : '' }}">
+                    <i class="fas fa-circle nav-icon text-primary"></i><p>Excemptions
+                        <span class="right badge badge-danger">New</span>
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('bills.kwh-monitoring') }}"
+                   class="nav-link {{ Request::is('bills.kwh-monitoring*') ? 'active' : '' }}">
+                    <i class="fas fa-circle nav-icon text-primary"></i><p>Kwh Monitoring
+                        <span class="right badge badge-danger">New</span>
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-header">                
+                Others
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('pendingBillAdjustments.index') }}"
+                   class="nav-link {{ Request::is('pendingBillAdjustments*') ? 'active' : '' }}">
+                   <i class="fas fa-circle nav-icon text-primary"></i><p>Zero Reading Adj.</p>
+                </a>
+            </li>
+        </ul>
+    </li>
+@endcanany --}}
 
 {{-- DISCONNECTION --}}
 @canany(['Super Admin', 'disco monitor'])
