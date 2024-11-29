@@ -602,7 +602,7 @@
         /**
          * NOTIFICATIONS
          **/
-        window.setInterval(getNotifications(), 2000)
+        // window.setInterval(getNotifications(), 2000)
         
         /**
          * SEARCH ACCOUNTS
