@@ -532,39 +532,6 @@
         })
 
         /**
-         *  MODAL SEARCH ACCOUNT
-         */
-        $('#modal-search-main').on('shown.bs.modal', function () {
-            $('#old-account-no-main').focus();
-        })
-
-        $("#old-account-no-main").inputmask({
-            mask: '99-99999-999',
-            placeholder: '',
-            showMaskOnHover: false,
-            showMaskOnFocus: false,
-            onBeforePaste: function (pastedValue, opts) {
-                var processedValue = pastedValue;
-
-                //do something with it
-
-                return processedValue;
-            }
-        });
-
-        $("#old-account-no-main").on('keyup', function(event) {
-            if (this.value.length > 7) {
-                performSearch(this.value)
-            }
-        })
-
-        $("#old-account-no-main").on('change', function(event) {
-            if (this.value.length > 7) {
-                performSearch(this.value)
-            }
-        })
-
-        /**
          * TOWN CHANGE
          */
         fetchBarangayFromTown($('#Town').val(), $('#Def_Brgy').text());
