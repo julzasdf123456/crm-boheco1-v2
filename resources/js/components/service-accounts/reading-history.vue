@@ -4,14 +4,16 @@
             <div class="table-responsive">
                 <table class="table table-sm table-bordered table-hover">
                     <thead>
-                        <th>Billing Month</th>
-                        <th>Reading Date</th>
-                        <th>Meter Reader</th>
-                        <th>kWH</th>
-                        <th>Demand kWH</th>
-                        <th>Field Findings</th>
-                        <th>Remarks</th>
-                        <th></th>
+                        <tr>
+                            <th>Billing Month</th>
+                            <th>Reading Date</th>
+                            <th>Meter Reader</th>
+                            <th>kWH</th>
+                            <th>Demand kWH</th>
+                            <th>Field Findings</th>
+                            <th>Remarks</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr v-for="reading in readings" :key="reading.BillNumber">

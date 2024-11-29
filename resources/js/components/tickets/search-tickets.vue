@@ -39,14 +39,16 @@
         <div class="col-lg-12 table-responsive px-4">
             <table class="table table-hover table-sm">
                 <thead>
-                    <th>Ticket ID</th>
-                    <th>Consumer Name<br>Account No.</th>
-                    <th>Ticket</th>
-                    <th>Address</th>
-                    <th>Meter No</th>
-                    <th>Status</th>
-                    <th>Office</th>
-                    <th style="width: 150px;"></th>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Consumer Name<br>Account No.</th>
+                        <th>Ticket</th>
+                        <th>Address</th>
+                        <th>Meter No</th>
+                        <th>Status</th>
+                        <th>Office</th>
+                        <th style="width: 150px;"></th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="res in resultData">

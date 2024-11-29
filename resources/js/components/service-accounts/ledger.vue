@@ -4,19 +4,21 @@
             <div class="table-responsive">
                 <table class="table table-sm table-bordered table-hover">
                     <thead>
-                        <th>Invoice No.</th>
-                        <th>Billing Month</th>
-                        <th class="text-right">Prev. Reading</th>
-                        <th class="text-right">Pres. Reading</th>
-                        <th class="text-right">kWH</th>
-                        <th class="text-right">Multiplier</th>
-                        <th class="text-right">Total kWH<br>Consumed</th>
-                        <th class="text-right">Net Amount</th>
-                        <th>Due Date</th>
-                        <th>OR Number</th>
-                        <th>Payment Date</th>
-                        <th>Cashier</th>
-                        <th></th>
+                        <tr>
+                            <th>Invoice No.</th>
+                            <th>Billing Month</th>
+                            <th class="text-right">Prev. Reading</th>
+                            <th class="text-right">Pres. Reading</th>
+                            <th class="text-right">kWH</th>
+                            <th class="text-right">Multiplier</th>
+                            <th class="text-right">Total kWH<br>Consumed</th>
+                            <th class="text-right">Net Amount</th>
+                            <th>Due Date</th>
+                            <th>OR Number</th>
+                            <th>Payment Date</th>
+                            <th>Cashier</th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr v-for="bill in ledger" :key="bill.BillNumber" :class="isNull(bill.Teller) ? 'bg-danger' : ''">

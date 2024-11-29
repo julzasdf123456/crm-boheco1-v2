@@ -19,12 +19,14 @@
         <div class="col-lg-12 table-responsive px-4">
             <table class="table table-hover table-sm">
                 <thead>
-                    <th>ID | Date Applied</th>
-                    <th>Applicant | Address</th>
-                    <th>Application | Status</th>
-                    <th>Office | Stats</th>
-                    <th>OR Details</th>
-                    <th></th>
+                    <tr>
+                        <th>ID | Date Applied</th>
+                        <th>Applicant | Address</th>
+                        <th>Application | Status</th>
+                        <th>Office | Stats</th>
+                        <th>OR Details</th>
+                        <th></th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="res in resultData" :key="res.ConsumerId" style="cursor: pointer;">

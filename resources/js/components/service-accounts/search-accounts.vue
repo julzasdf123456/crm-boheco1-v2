@@ -19,10 +19,12 @@
         <div class="col-lg-12 table-responsive px-4">
             <table class="table table-hover table-sm">
                 <thead>
-                    <th>Account Number</th>
-                    <th>Consumer Name</th>
-                    <th>Address</th>
-                    <th>Meter Number</th>
+                    <tr>
+                        <th>Account Number</th>
+                        <th>Consumer Name</th>
+                        <th>Address</th>
+                        <th>Meter Number</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr v-for="res in resultData">

@@ -41,14 +41,16 @@
                             <div class="table-responsive">
                                 <table class="table table-hover table-bordered table-sm">
                                     <thead>
-                                        <th>#</th>
-                                        <th>Account Number</th>
-                                        <th>Consumer Name</th>
-                                        <th>Consumer Address</th>
-                                        <th>Meter Number</th>
-                                        <th>Reading Remarks</th>
-                                        <th>Present Reading</th>
-                                        <th></th>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Account Number</th>
+                                            <th>Consumer Name</th>
+                                            <th>Consumer Address</th>
+                                            <th>Meter Number</th>
+                                            <th>Reading Remarks</th>
+                                            <th>Present Reading</th>
+                                            <th></th>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="(data, index) in readingData" :key="data.AccountNumber">
