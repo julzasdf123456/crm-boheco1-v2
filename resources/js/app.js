@@ -1,16 +1,16 @@
 import './bootstrap';
 import { createApp } from 'vue/dist/vue.esm-bundler.js';
 
-const SearchAll = defineAsyncComponent(() => import('./components/service-connections/search-all.vue'));
-const SelectMCO = defineAsyncComponent(() => import('./components/service-connections/select-mco.vue'));
-const SearchMembership = defineAsyncComponent(() => import('./components/member-consumers/search-membership.vue'));
-const SearchTickets = defineAsyncComponent(() => import('./components/tickets/search-tickets.vue'));
-const BillingDashboard = defineAsyncComponent(() => import('./components/billing/billing-dashboard.vue'));
-const SearchAccounts = defineAsyncComponent(() => import('./components/service-accounts/search-accounts.vue'));
-const ViewAccount = defineAsyncComponent(() => import('./components/service-accounts/view-account.vue'));
-const Ledger = defineAsyncComponent(() => import('./components/service-accounts/ledger.vue'));
-const ReadingHistory = defineAsyncComponent(() => import('./components/service-accounts/reading-history.vue'));
-const ReadingMonitor = defineAsyncComponent(() => import('./components/readings/reading-monitor.vue'));
+import SearchAll from "./components/service-connections/search-all.vue"
+import SelectMCO from "./components/service-connections/select-mco.vue"
+import SearchMembership from "./components/member-consumers/search-membership.vue"
+import SearchTickets from "./components/tickets/search-tickets.vue"
+import BillingDashboard from "./components/billing/billing-dashboard.vue"
+import SearchAccounts from "./components/service-accounts/search-accounts.vue"
+import ViewAccount from "./components/service-accounts/view-account.vue"
+import Ledger from "./components/service-accounts/ledger.vue"
+import ReadingHistory from "./components/service-accounts/reading-history.vue"
+import ReadingMonitor from "./components/readings/reading-monitor.vue"
 
 const app = createApp({});
 app.component('search-all', SearchAll);
