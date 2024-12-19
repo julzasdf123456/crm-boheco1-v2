@@ -137,9 +137,7 @@ import moment from 'moment';
 import FlatPickr from 'vue-flatpickr-component';
 import { Bootstrap4Pagination } from 'laravel-vue-pagination'
 import 'flatpickr/dist/flatpickr.css';
-import jquery from 'jquery';
 import Swal from 'sweetalert2';
-import { renderSlot } from 'vue';
 import { Calendar, DatePicker } from 'v-calendar';
 import 'v-calendar/style.css';
 

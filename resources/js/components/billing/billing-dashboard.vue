@@ -84,7 +84,6 @@ import moment from 'moment';
 import FlatPickr from 'vue-flatpickr-component';
 import { Bootstrap4Pagination } from 'laravel-vue-pagination'
 import 'flatpickr/dist/flatpickr.css';
-import jquery from 'jquery';
 import Swal from 'sweetalert2';
 import { Line, Bar, Pie } from 'vue-chartjs'
 import { Chart as ChartJS,

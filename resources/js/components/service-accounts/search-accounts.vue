@@ -55,9 +55,7 @@ import moment from 'moment';
 import FlatPickr from 'vue-flatpickr-component';
 import { Bootstrap4Pagination } from 'laravel-vue-pagination'
 import 'flatpickr/dist/flatpickr.css';
-import jquery from 'jquery';
 import Swal from 'sweetalert2';
-import { renderSlot } from 'vue';
 
 export default {
     components : {
@@ -68,7 +66,7 @@ export default {
     data() {
         return {
             moment : moment,
-            baseURL : 'http://192.168.10.48' + axios.defaults.baseURL,
+            baseURL : window.location.origin + axios.defaults.baseURL,
             imgURL : window.location.origin + axios.defaults.imgURL,
             colorProfile : document.querySelector("meta[name='color-profile']").getAttribute('content'),
             tableInputTextColor : this.isNull(document.querySelector("meta[name='color-profile']").getAttribute('content')) ? 'text-dark' : 'text-white',
