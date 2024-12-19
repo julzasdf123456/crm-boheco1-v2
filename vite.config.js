@@ -14,13 +14,13 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: {
-        proxy: {
-            '/bills': {
-                target: 'http://192.168.10.48', // Your Laravel server
-                changeOrigin: true,
-                secure: false,
-            },
-        },
-    },
+    // server: {
+    //     proxy: {
+    //         '/bills': {
+    //             target: 'http://192.168.10.48', // Your Laravel server
+    //             changeOrigin: true,
+    //             secure: false,
+    //         },
+    //     },
+    // },
 });
