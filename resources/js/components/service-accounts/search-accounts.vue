@@ -68,7 +68,7 @@ export default {
     data() {
         return {
             moment : moment,
-            baseURL : window.location.origin + axios.defaults.baseURL,
+            baseURL : 'http://192.168.10.48' + axios.defaults.baseURL,
             imgURL : window.location.origin + axios.defaults.imgURL,
             colorProfile : document.querySelector("meta[name='color-profile']").getAttribute('content'),
             tableInputTextColor : this.isNull(document.querySelector("meta[name='color-profile']").getAttribute('content')) ? 'text-dark' : 'text-white',
