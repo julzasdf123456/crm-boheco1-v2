@@ -121,7 +121,7 @@ export default {
     },
     methods : {
         isNull (item) {
-            if (jquery.isEmptyObject(item)) {
+            if (!item) {
                 return true;
             } else {
                 return false;
