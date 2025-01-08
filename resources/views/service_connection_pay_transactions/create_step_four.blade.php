@@ -136,8 +136,7 @@ $id = IDGenerator::generateID();
                                     </td>
                                     <td>
                                         <input type="number" step="any" class="form-control form-control-sm text-right"
-                                            name="{{ $item->id }}BOHECOIShare"
-                                            value="{{ number_format($item->BOHECOIShare, 2) }}"
+                                            name="{{ $item->id }}BOHECOIShare" {{-- value="{{ number_format($item->BOHECOIShare, 2) }}" --}}
                                             id="{{ $item->id }}BOHECOIShare" disabled>
                                     </td>
                                     <td style="width: 80px;">
@@ -151,9 +150,8 @@ $id = IDGenerator::generateID();
                                     </td>
                                     <td>
                                         <input type="number" step="any" style="font-weight: bold;"
-                                            class="form-control form-control-sm text-right"
-                                            name="{{ $item->id }}Total" value="{{ $item->Total }}"
-                                            id="{{ $item->id }}Total" disabled>
+                                            class="form-control form-control-sm text-right" name="{{ $item->id }}Total"
+                                            value="{{ $item->Total }}" id="{{ $item->id }}Total" disabled>
                                     </td>
                                 </tr>
                                 @php
@@ -775,6 +773,7 @@ $id = IDGenerator::generateID();
                 var bohecoShare = qty * 20
                 var elecShare = subTotal - bohecoShare
                 $('#' + id + 'ElecShare').val(elecShare.toFixed(2))
+                $('#' + id + 'BOHECOIShare').val(bohecoShare.toFixed(2))
             });
 
         }
