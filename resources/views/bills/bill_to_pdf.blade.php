@@ -1,5 +1,7 @@
 @php
     use App\Models\AccountMaster;
+    use Milon\Barcode\DNS1D;
+    $d = new DNS1D();
 @endphp
 
 <link rel="stylesheet" href="{{ URL::asset('css/all.css') }} ">
@@ -58,8 +60,9 @@
         <div style="padding: 240px 30px 0 30px;">
             <div class="row">
                 <div class="col-md-8">
-                    <p class="no-pads"><span class="text-muted">Account Number: </span><strong
-                            class="text-success">{{ $accountNumber }}</strong></p>
+                    <h4 class="no-pads">
+                        <strong class="text-success">{{ $accountNumber }}</strong>
+                    </h4>
                     <h4 class="no-pads">{{ $accountMaster != null ? $accountMaster->ConsumerName : '-' }}</h4>
                     <p class="no-pads">
                         {{ $accountMaster != null ? $accountMaster->ConsumerAddress . ' • ' . AccountMaster::getTypes($accountMaster->ConsumerType) : '-' }}
@@ -76,9 +79,13 @@
                     {{-- <p class="no-pads text-right" style="padding-right: 64px !important;">Billing Invoice</p> --}}
                     {{-- <p class="no-pads text-right text-success" style="font-size: 1.2em; padding-right: 64px !important;"><strong>BI1000000000000001</strong></p> --}}
                     <h3 class="text-right" style="padding-right: 9px !important;">
-                        <strong>{{ date('F Y', strtotime($period)) }}</strong></h3>
+                        <strong>{{ date('F Y', strtotime($period)) }}</strong>
+                    </h3>
                     <p class="no-pads text-right" style="padding-right: 9px !important;">Bill No.:
                         {{ $bill != null ? $bill->BillNumber : '-' }}</p>
+                    <div class="no-pads" style="padding-right: 9px !important;">
+                        <span class="float-right">{!! $d->getBarcodeHTML($accountNumber, 'C128', 2, 28) !!}</span>
+                    </div>
                 </div>
             </div>
 
@@ -620,7 +627,8 @@
                                     {{ $bill != null ? number_format($bill->NetGenerationAmount, 2) : '0.00' }}</td>
                                 <td class="indent-1"
                                     style="padding-left: 25px !important; border-top: 1px solid #aeaeae;">
-                                    <strong>Consumption from BOHECO I</strong></td>
+                                    <strong>Consumption from BOHECO I</strong>
+                                </td>
                                 <td style="border-top: 1px solid #878787;"></td>
                                 <td style="border-top: 1px solid #878787;"></td>
                                 <td class="text-right" style="border-top: 1px solid #878787;">
@@ -633,7 +641,8 @@
                                     {{ $billPrev != null ? ($billPrev->NetGenerationAmount != null && $billPrev->NetGenerationAmount < 0 ? '(' . number_format($billPrev->NetGenerationAmount, 2) . ')' : '0.0') : '0.00' }}
                                 </td>
                                 <td colspan="3" class="indent-1" style="padding-left: 25px !important;">
-                                    <strong>Less Total Generation</strong></td>
+                                    <strong>Less Total Generation</strong>
+                                </td>
                                 <td class="text-right">
                                     {{ $bill != null ? '(' . number_format($bill->NetGenerationAmount, 2) . ')' : '0.00' }}
                                 </td>
@@ -644,7 +653,8 @@
                                 <td></td>
                                 <td></td>
                                 <td colspan="3" class="indent-1" style="padding-left: 25px !important;">
-                                    <strong>Less Total Residual Credit</strong></td>
+                                    <strong>Less Total Residual Credit</strong>
+                                </td>
                                 <td class="text-right">
                                     {{ $billPrev != null ? ($billPrev->NetMeteringNetAmount != null && floatval($billPrev->NetMeteringNetAmount) < 0 ? '(' . number_format(abs($billPrev->NetMeteringNetAmount), 2) . ')' : '0.0') : '0.00' }}
                                 </td>
@@ -732,7 +742,8 @@
                 <div class="row mt-1">
                     <div class="col-md-4">
                         <p class="indent-1 no-pads"><span class="text-muted">Discount: </span> <strong>₱
-                                {{ number_format($billsDcrRevisionView->NetAmountLessCharges * 0.01, 2) }}</strong></p>
+                                {{ number_format($billsDcrRevisionView->NetAmountLessCharges * 0.01, 2) }}</strong>
+                        </p>
                         <p class="indent-1 no-pads"><span class="text-muted">WT 2306: </span> <strong>₱
                                 {{ number_format($billsDcrRevisionView->Form2306, 2) }}</strong></p>
                         <p class="indent-1 no-pads"><span class="text-muted">WT 2307: </span> <strong>₱
