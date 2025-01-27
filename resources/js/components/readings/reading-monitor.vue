@@ -139,7 +139,7 @@ import { Bootstrap4Pagination } from 'laravel-vue-pagination'
 import 'flatpickr/dist/flatpickr.css';
 import Swal from 'sweetalert2';
 import { Calendar, DatePicker } from 'v-calendar';
-import 'v-calendar/style.css';
+import style from 'v-calendar/style.css';
 
 export default {
     components : {
@@ -148,6 +148,7 @@ export default {
         'pagination' : Bootstrap4Pagination,
         Calendar,
         DatePicker,
+        style,
     },
     data() {
         return {
