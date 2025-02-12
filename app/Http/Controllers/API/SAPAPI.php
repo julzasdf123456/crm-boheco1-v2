@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\SAPObject;
+use App\Models\IDGenerator;
 
 class SAPAPI extends Controller {
     public function getServiceInvoiceBatch(Request $request) {
@@ -136,6 +137,7 @@ class SAPAPI extends Controller {
                     )
                     ->orderByDesc('Bills.ServicePeriodEnd')
                     ->limit($batchCount)
+                    ->offset(10)
                     ->get();
 
         $sapObj = new SAPObject;
@@ -143,12 +145,14 @@ class SAPAPI extends Controller {
         $sapObj->BatchDate = date('Ymd');
 
         $docHeaders = [];
-        foreach ($data as $item) {
+        foreach ($data as $key => $item) {
             $header = [];
 
-            $header['U_TransId'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix;
+            // $header['U_TransId'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
+            $header['U_TransId'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
             $header['CardCode'] = 'C00001'; // FIXED CARD CODE FOR BOHECO I, Change if necessary
-            $header['NumAtCard'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix;
+            // $header['NumAtCard'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
+            $header['NumAtCard'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
             $header['DocDate'] = date('Ymd', strtotime($item->BillingDate));
             $header['DocDueDate'] = date('Ymd', strtotime($item->DueDate));
             $header['TaxDate'] = date('Ymd', strtotime($item->BillingDate));
@@ -360,7 +364,15 @@ class SAPAPI extends Controller {
                 ],
             ];
 
-            $header['DocDetails'] = $docDetails;
+            // FILTER ZERO AMOUNTS IN LINE TOTAL
+            // Remove if LineTotal amount is zero
+            $filtered = array_filter($docDetails, function($x) {
+                return abs($x['LineTotal']) > 0 || abs($x['LineTotal']) < 0;
+            });
+
+            $filtered = array_values($filtered);
+
+            $header['DocDetails'] = $filtered;
 
             $docHeaders[] = $header;
         }
