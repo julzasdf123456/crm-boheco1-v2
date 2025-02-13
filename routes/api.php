@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ReadAndBillAPI;
 use App\Http\Controllers\API\DisconnectionAPI;
 use App\Http\Controllers\API\SMSNotificationsAPI;
 use App\Http\Controllers\API\Billing;
+use App\Http\Controllers\API\SAPAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -104,4 +105,7 @@ Route::post('update-bills-email-sent', [OtherData::class, 'updateBillsEmailSent'
 
 // EXT API
 Route::get('search-accounts', [Billing::class, 'searchAccounts']);
+
+// EXT API
+Route::get('get-service-invoice-batch', [SAPAPI::class, 'getServiceInvoiceBatch']);
 
