@@ -14,13 +14,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    // server: {
-    //     proxy: {
-    //         '/bills': {
-    //             target: 'http://192.168.10.48', // Your Laravel server
-    //             changeOrigin: true,
-    //             secure: false,
-    //         },
-    //     },
-    // },
+    server: {
+        cors: true,
+        hmr: {
+            host: '192.168.12.13',
+        },
+    },
 });
