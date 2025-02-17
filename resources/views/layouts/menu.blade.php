@@ -199,6 +199,7 @@ use Illuminate\Support\Facades\Auth;
             </li>
             @endcanany
 
+
             @canany(['Super Admin', 'sc view'])
             <li class="nav-item">
                 <a href="#" class="nav-link">
@@ -281,6 +282,12 @@ use Illuminate\Support\Facades\Auth;
                         <a href="{{ route('serviceConnections.energization-report') }}"
                         class="nav-link {{ Request::is('serviceConnections.energization-report*') ? 'active' : '' }}">
                         <i class="fas fa-charging-station nav-icon text-warning"></i><p>Energization</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('serviceConnections.energization-report-new-connection') }}"
+                        class="nav-link {{ Request::is('serviceConnections.energization-report-new-connection*') ? 'active' : '' }}">
+                        <i class="fas fa-charging-station nav-icon text-warning"></i><p>Energization For New Connection</p>
                         </a>
                     </li>
                     <li class="nav-item">
