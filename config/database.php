@@ -94,7 +94,7 @@ return [
         'sqlsrvbilling' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            //'host' => '192.168.10.21',
+            //'host' => '192.168.10.21',sqlsrvbilling
             'host' => '192.168.12.29',
             'port' => '1433',
             'database' => env('DB_DATABASE_BILLING', 'Billing'),

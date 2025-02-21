@@ -20,7 +20,11 @@ class SAPAPI extends Controller {
                         $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
                             ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
                     })
-                    ->whereRaw("Bills.Reserve1 IS NULL")                    
+                    ->leftJoin('Readings', function($join) {
+                        $join->on('Bills.AccountNumber', '=', 'Readings.AccountNumber')
+                            ->on('Bills.ServicePeriodEnd', '=', 'Readings.ServicePeriodEnd');
+                    })
+                    ->whereRaw("Bills.Reserve1 IS NULL")                   
                     ->whereDate('Bills.ServicePeriodEnd', '>=', '2025-01-01')
                     ->select(
                         'Bills.AccountNumber',
@@ -135,28 +139,32 @@ class SAPAPI extends Controller {
                         'BillsExtension.Item22',
                         'BillsExtension.Item23',
                         'BillsExtension.Item24',
+
+                        'Readings.ReadingDate AS DocDate',
+                        
                     )
                     ->orderByDesc('Bills.ServicePeriodEnd')
                     ->limit($batchCount)
-                    ->offset(10)
+                    //->offset(120)
                     ->get();
 
         $sapObj = new SAPObject;
         $sapObj->BatchID = SAPObject::getSIBatchIdDaily();
         $sapObj->BatchDate = date('Ymd');
 
-        $paymentDetails = [];
+        $docHeaders = [];
         foreach ($data as $key => $item) {
             $header = [];
 
             // $header['U_TransId'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
-            $header['U_TransId'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
+            //$header['U_TransId'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
+            $header['U_TransId'] = 'SI' . $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd)); // THIS IS ONLY A TEST comment during deploymet
             $header['CardCode'] = 'C00001'; // FIXED CARD CODE FOR BOHECO I, Change if necessary
             // $header['NumAtCard'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
-            $header['NumAtCard'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
-            $header['DocDate'] = date('Ymd', strtotime($item->BillingDate));
+            $header['NumAtCard'] = $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd));
+            $header['DocDate'] = date('Ymd', strtotime($item->DocDate));
             $header['DocDueDate'] = date('Ymd', strtotime($item->DueDate));
-            $header['TaxDate'] = date('Ymd', strtotime($item->BillingDate));
+            $header['TaxDate'] = date('Ymd', strtotime($item->DocDate));
             $header['Comments'] = $item->AccountNumber;
             $header['AccountNumber'] = $item->AccountNumber;
             $header['ServicePeriodEnd'] = $item->ServicePeriodEnd;
@@ -377,23 +385,95 @@ class SAPAPI extends Controller {
 
             $header['DocDetails'] = $filtered;
 
-            $paymentDetails[] = $header;
+            $docHeaders[] = $header;
         }
 
-        $sapObj->DocHeaders = $paymentDetails;
+        $sapObj->DocHeaders = $docHeaders;
         
         return response()->json($sapObj, 200);
     }
 
     public function getIncomingPaymentBatch(Request $request) {
         $batchCount = $request['batchCount'];
-
+        
         $data = DB::connection("sqlsrvbilling")
                     ->table('Bills')
                     ->leftJoin('AccountMaster', 'Bills.AccountNumber', '=', 'AccountMaster.AccountNumber')
                     ->leftJoin('PaidBills', function($join) {
                         $join->on('Bills.AccountNumber', '=', 'PaidBills.AccountNumber')
                             ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
+                    })
+                                     
+                    ->whereDate('PaidBills.ServicePeriodEnd', '>=', '2025-01-01')
+                    ->whereRaw("PaidBills.Others1 IS NULL")   
+                    ->select(
+                        'Bills.AccountNumber',
+                        'Bills.ServicePeriodEnd',
+                        'AccountMaster.Item1 AS AccountCoordinates',
+                        'AccountMaster.MeterNumber',
+                        'AccountMaster.ConsumerName',
+
+                        'Bills.BillNumber as InvReferenceNo',
+                        'Bills.BillingDate',
+                        'Bills.DueDate',
+
+                        'PaidBills.NetAmount as PaidAmount',
+                        'PaidBills.PostingDate as DocDate',
+                        
+                    )
+                    ->orderByDesc('PaidBills.ServicePeriodEnd')
+                    ->limit($batchCount)
+                    //->offset(120)
+                    ->get();
+                        
+
+        $sapObj = new SAPObject;
+        $sapObj->BatchID = SAPObject::getIPBatchIdDaily();
+        $sapObj->BatchDate = date('Ymd ');
+
+        $paymentDetails = [];
+        foreach ($data as $key => $item) {
+            if (isset($item->PaidAmount)) {
+                $details = [];
+
+                // $details['U_TransId'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
+                $details['U_TransId'] = 'INPAY' .$item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd)); // THIS IS ONLY A TEST comment during deploymet
+                $details['InvReferenceNo'] = $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd));
+                $details['CardCode'] = 'C00001'; // FIXED CARD CODE FOR BOHECO I, Change if necessary            
+
+                $details['DocDate'] = date('Ymd', strtotime($item->DocDate));
+                $details['DocDueDate'] = date('Ymd', strtotime($item->DueDate));
+                $details['TaxDate'] = date('Ymd', strtotime($item->DocDate));
+                
+                $details['Account'] = '12110201000';
+                $details['PaidAmount'] = $item->PaidAmount;
+                $details['Remarks'] = "Payment for InvReferenceNo: ".$item->InvReferenceNo;
+                $details['JournalRemarks'] = "Payment for InvReferenceNo: ".$item->InvReferenceNo;
+                $details['AccountNumber'] = $item->AccountNumber;
+                $details['ServicePeriodEnd'] = $item->ServicePeriodEnd;
+
+                $paymentDetails[] = $details;
+            }
+        }
+
+        $sapObj->PaymentDetails = $paymentDetails;
+        
+        return response()->json($sapObj, 200);
+    }
+
+    public function getAccountingServiceInvoiceBatch(Request $request) {
+        $batchCount = $request['batchCount'];
+
+        $data = DB::connection("sqlsrvaccounting")
+                    ->table('Bills')
+                    ->leftJoin('AccountMaster', 'Bills.AccountNumber', '=', 'AccountMaster.AccountNumber')
+                    ->leftJoin('BillsExtension', function($join) {
+                        $join->on('Bills.AccountNumber', '=', 'BillsExtension.AccountNumber')
+                            ->on('Bills.ServicePeriodEnd', '=', 'BillsExtension.ServicePeriodEnd');
+                    })
+                    ->leftJoin('Readings', function($join) {
+                        $join->on('Bills.AccountNumber', '=', 'Readings.AccountNumber')
+                            ->on('Bills.ServicePeriodEnd', '=', 'Readings.ServicePeriodEnd');
                     })
                     ->whereRaw("Bills.Reserve1 IS NULL")                    
                     ->whereDate('Bills.ServicePeriodEnd', '>=', '2025-01-01')
@@ -403,11 +483,6 @@ class SAPAPI extends Controller {
                         'AccountMaster.Item1 AS AccountCoordinates',
                         'AccountMaster.MeterNumber',
                         'AccountMaster.ConsumerName',
-
-                        'PaidBills.DCRNumber AS InvReferenceNo',
-                        
-
-
 
                         'Bills.DAA_GRAM',
                         'Bills.DAA_ICERA',
@@ -490,32 +565,61 @@ class SAPAPI extends Controller {
                         'Bills.InvoiceNumber',
                         'Bills.InvoicePrefix',
                         'Bills.InvoiceSuffix',
-                        
+                        'BillsExtension.GenerationVAT',
+                        'BillsExtension.TransmissionVAT',
+                        'BillsExtension.SLVAT',
+                        'BillsExtension.DistributionVAT',
+                        'BillsExtension.OthersVAT',
+                        'BillsExtension.Item5',
+                        'BillsExtension.Item6',
+                        'BillsExtension.Item7',
+                        'BillsExtension.Item8',
+                        'BillsExtension.Item9',
+                        'BillsExtension.Item10 AS RFSC',
+                        'BillsExtension.Item11',
+                        'BillsExtension.Item12',
+                        'BillsExtension.Item13',
+                        'BillsExtension.Item14',
+                        'BillsExtension.Item15',
+                        'BillsExtension.Item16 AS BusinessTax',
+                        'BillsExtension.Item17 AS RPT',
+                        'BillsExtension.Item18 AS OGA',
+                        'BillsExtension.Item19 AS OTGA',
+                        'BillsExtension.Item20 AS OSLA',
+                        'BillsExtension.Item21',
+                        'BillsExtension.Item22',
+                        'BillsExtension.Item23',
+                        'BillsExtension.Item24',
+
+                        'Readings.ReadingDate AS DocDate',
                     )
                     ->orderByDesc('Bills.ServicePeriodEnd')
                     ->limit($batchCount)
-                    ->offset(10)
+                    //->offset(120)
                     ->get();
 
         $sapObj = new SAPObject;
         $sapObj->BatchID = SAPObject::getSIBatchIdDaily();
         $sapObj->BatchDate = date('Ymd');
 
-        $paymentDetails = [];
+        $docHeaders = [];
         foreach ($data as $key => $item) {
             $header = [];
 
             // $header['U_TransId'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
-            $header['U_TransId'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
+            //$header['U_TransId'] = 'SI' . IDGenerator::generateID() . $key; // THIS IS ONLY A TEST comment during deploymet
+            $header['U_TransId'] = 'SI' . $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd)); // THIS IS ONLY A TEST comment during deploymet
             $header['CardCode'] = 'C00001'; // FIXED CARD CODE FOR BOHECO I, Change if necessary
-            $header['InvReferenceNo'] = $item->InvReferenceNo;
-            $header['DocDate'] = date('Ymd', strtotime($item->BillingDate));
+            // $header['NumAtCard'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
+            $header['NumAtCard'] = $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd));
+            
+
+            $header['DocDate'] = date('Ymd', strtotime($item->DocDate));
             $header['DocDueDate'] = date('Ymd', strtotime($item->DueDate));
-            $header['TaxDate'] = date('Ymd', strtotime($item->BillingDate));
-            $header['Account'] = $item->AccountNumber;
+            $header['TaxDate'] = date('Ymd', strtotime($item->DocDate));
 
             $header['Comments'] = $item->AccountNumber;
-            
+            $header['AccountNumber'] = $item->AccountNumber;
             $header['ServicePeriodEnd'] = $item->ServicePeriodEnd;
 
             $docDetails = [
@@ -734,10 +838,10 @@ class SAPAPI extends Controller {
 
             $header['DocDetails'] = $filtered;
 
-
+            $docHeaders[] = $header;
         }
 
-        $sapObj->DocHeaders = $paymentDetails;
+        $sapObj->DocHeaders = $docHeaders;
         
         return response()->json($sapObj, 200);
     }
