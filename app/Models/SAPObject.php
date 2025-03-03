@@ -13,6 +13,10 @@ class SAPObject extends Model
         return "SI-" . date('Ymd');
     }
 
+    public static function getIPBatchIdDaily() {
+        return "INPAY-" . date('Ymd');
+    }
+
     public static function sumAll($arr) {
         $sum = 0;
 

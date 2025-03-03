@@ -109,3 +109,5 @@ Route::get('search-accounts', [Billing::class, 'searchAccounts']);
 // EXT API
 Route::get('get-service-invoice-batch', [SAPAPI::class, 'getServiceInvoiceBatch']);
 
+Route::get('get-incoming-payment-batch', [SAPAPI::class, 'getIncomingPaymentBatch']);
+

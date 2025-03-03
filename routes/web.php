@@ -913,3 +913,6 @@ Route::resource('miscellaneousPayments', App\Http\Controllers\MiscellaneousPayme
 
 Route::resource('bills-readings', App\Http\Controllers\BillsReadingsController::class);
 Route::resource('meter-update-logs', App\Http\Controllers\MeterUpdateLogsController::class);
+
+Route::get('/service_connections/new-connection/energization-report', [ServiceConnectionsController::class, 'energizationReportNewConnection'])->name('serviceConnections.energization-report-new-connection');
+Route::post('/service_connections/download-energization-report-new-connection', [ServiceConnectionsController::class, 'downloadEnergizationReportNewConnection'])->name('serviceConnections.download-energization-report-new-connection');
