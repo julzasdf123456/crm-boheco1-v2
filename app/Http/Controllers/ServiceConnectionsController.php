@@ -2385,7 +2385,7 @@ class ServiceConnectionsController extends AppBaseController
             ->join('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')
             ->join('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
             ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
-            ->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')
+            /*->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')*/
             ->select(DB::raw("CONCAT(CRM_ServiceConnections.id, ' ') as id"),
                         'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
                         'CRM_ServiceConnections.DateTimeOfEnergization',
@@ -2407,7 +2407,7 @@ class ServiceConnectionsController extends AppBaseController
             ->join('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')
             ->join('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
             ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
-            ->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')
+            /*->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')*/
             ->select(DB::raw("CONCAT(CRM_ServiceConnections.id, ' ') as id"),
                         'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
                         'CRM_ServiceConnections.DateTimeOfEnergization',
@@ -4731,9 +4731,10 @@ class ServiceConnectionsController extends AppBaseController
             ->join('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')
             ->join('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
             ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
-            ->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')
+            /*->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')*/
             ->select(DB::raw("CONCAT(CRM_ServiceConnections.id, ' ') as id"),
                         'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
+                        'CRM_ServiceConnectionAccountTypes.Alias as AccountType',
                         'CRM_ServiceConnections.DateTimeOfEnergization',
                         'CRM_ServiceConnections.Office', 
                         'CRM_ServiceConnections.Sitio as Sitio', 
@@ -4754,9 +4755,10 @@ class ServiceConnectionsController extends AppBaseController
             ->join('CRM_Barangays', 'CRM_ServiceConnections.Barangay', '=', 'CRM_Barangays.id')
             ->join('CRM_Towns', 'CRM_ServiceConnections.Town', '=', 'CRM_Towns.id')
             ->leftJoin('CRM_ServiceConnectionAccountTypes', 'CRM_ServiceConnections.AccountType', '=', 'CRM_ServiceConnectionAccountTypes.id')
-            ->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')
+            /*->join('CRM_ServiceConnectionCrew', 'CRM_ServiceConnections.StationCrewAssigned', '=', 'CRM_ServiceConnectionCrew.id')*/
             ->select(DB::raw("CONCAT(CRM_ServiceConnections.id, ' ') as id"),
                         'CRM_ServiceConnections.ServiceAccountName as ServiceAccountName',
+                        'CRM_ServiceConnectionAccountTypes.Alias as AccountType',
                         'CRM_ServiceConnections.DateTimeOfEnergization',
                         'CRM_ServiceConnections.Office', 
                         'CRM_ServiceConnections.Sitio as Sitio',
