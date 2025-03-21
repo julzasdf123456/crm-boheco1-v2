@@ -44,6 +44,7 @@ use App\Models\CRMQueue;
 use App\Models\CRMDetails;
 use App\Exports\ServiceConnectionApplicationsReportExport;
 use App\Exports\ServiceConnectionEnergizationReportExport;
+use App\Exports\ServiceConnectionEnergizationReportExportNew;
 use App\Exports\DynamicExport;
 use App\Exports\SummaryReportExport;
 use Illuminate\Support\Facades\DB;
@@ -4776,7 +4777,7 @@ class ServiceConnectionsController extends AppBaseController
             ->get();
         }
 
-        $export = new ServiceConnectionEnergizationReportExport($serviceConnections->toArray());
+        $export = new ServiceConnectionEnergizationReportExportNew($serviceConnections->toArray());
 
         return Excel::download($export, 'Energization-Report.xlsx');
     }
