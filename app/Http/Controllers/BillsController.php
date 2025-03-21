@@ -379,9 +379,16 @@ class BillsController extends AppBaseController
                 'billsDcrRevisionView' => $billsDcrRevisionView,
                 'billPrev' => $billPrev,
             ])
-            ->format(Format::A4)
+            ->format('letter')
             // ->paperSize(215.9, 330.2, 'mm')
+            /*->margins(0, 0, 0, 0)
+            ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $period . ".pdf");*/
+            //->paperSize(215.9, 279.4, 'mm')
             ->margins(0, 0, 0, 0)
+            /*->setOption('marginTop', '0mm')
+            ->setOption('marginRight', '0mm')
+            ->setOption('marginBottom', '0mm')
+            ->setOption('marginLeft', '0mm')*/
             ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $period . ".pdf");
 
         return response()->json([
@@ -513,9 +520,10 @@ class BillsController extends AppBaseController
                     'billsDcrRevisionView' => $billsDcrRevisionView,
                     'billPrev' => $billPrev,
                 ])
-                ->format(Format::A4)
-                // ->paperSize(215.9, 330.2, 'mm')
+                //->format(Format::Letter)
+                ->paperSize(215.9, 279.4, 'mm')
                 ->margins(0, 0, 0, 0)
+                ->paddings(0, 0, 0, 0)
                 ->save(public_path() . "/pdfs/" . $accountNumber . "-" . $period . ".pdf");
 
             return response()->json([
