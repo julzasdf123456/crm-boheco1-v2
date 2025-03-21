@@ -310,4 +310,8 @@ class Tickets extends Model
             return '';
         }
     }
+
+    public static function getDisconnectionPole(){
+        return '1668541254422';
+    }
 }
