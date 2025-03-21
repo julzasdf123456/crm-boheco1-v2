@@ -39,6 +39,7 @@ use App\Models\CRMQueue;
 use App\Models\CRMDetails;
 use App\Models\ChangeMeter;
 use App\Models\TempReadings;
+use App\Models\BillsReadings;
 use Flash;
 use Response;
 
@@ -992,12 +993,14 @@ class TicketsController extends AppBaseController
 
     public function updateExecution(Request $request) {
         $ticket = Tickets::find($request['id']);
+        
         $ticket->Status = $request['Status'];
         $ticket->Assessment = $request['Assessment'];
         $ticket->Notes = $request['Notes'];
         $ticket->DateTimeLinemanExecuted = date('Y-m-d H:i:s', strtotime($request['DateTimeLinemanExecuted']));
         $ticket->save();
 
+        
         // CREATE LOG
         $ticketLog = new TicketLogs;
         $ticketLog->id = IDGenerator::generateID();
@@ -1016,6 +1019,12 @@ class TicketsController extends AppBaseController
                     $account->AccountStatus = 'ACTIVE';
                     $account->save();
                 }
+            }elseif($ticketParent != null && $ticketParent->ParentTicket==Tickets::getDisconnectionPole()){
+                $account = AccountMaster::find($ticket->AccountNumber);
+                if ($account != null) {
+                    $account->AccountStatus = 'DISCO';
+                    $account->save();
+                }
             }
         } else {
             $ticketLog->LogDetails = $request['Notes'];
@@ -1024,6 +1033,7 @@ class TicketsController extends AppBaseController
         $ticketLog->save();
 
         // SEND SMS
+        /*
         if ($ticket->ContactNumber != null) {
             if (strlen($ticket->ContactNumber) > 10 && strlen($ticket->ContactNumber) < 13) {
                 if ($request['Status'] == 'Executed') {
@@ -1040,8 +1050,8 @@ class TicketsController extends AppBaseController
                 }
                 SMSNotifications::createFreshSms($ticket->ContactNumber, $msg, 'TICKETS', $ticket->id);
             }
-        }
-
+        }*/
+        
         return response()->json($ticket, 200);
     }
 
@@ -3934,16 +3944,35 @@ class TicketsController extends AppBaseController
                 $account->save();
             }
 
-            // ADD NEW METER
-            $meter = new Meters;
-            $meter->MeterNumber = $meterNumber;
-            $meter->MeterDigits = '5';
-            $meter->Multiplier = $multiplier;
-            $meter->ChargingMode = 'ENERGY';
-            $meter->Make = $ticket->NewMeterBrand;
-            $meter->MeterStatus = 'ACTIVE';
-            $meter->InitialReading = $kwhStart;
-            $meter->save();
+            //CHECK IF METER IS ALREADY EXIST AND CONNECTED TO THE CURRENT ACCOUNT NUMBER
+            $meter = Meters::where('MeterNumber', $ticket->NewMeterNo)->first();        
+            if($meter != null){
+                $validateMeter = DB::connection('sqlsrvbilling')
+                    ->table('AccountMaster')
+                    ->whereRaw("AccountNumber='" . $ticket->AccountNumber . "'")
+                    ->whereRaw("MeterNumber='" . $ticket->NewMeterNo . "'")
+                    ->first();
+                if($validateMeter == null){
+                    Flash::error('Meter Number already exist!');                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Meter Number already exist!'], 
+                        422);
+                }
+            }else{
+                // ADD NEW METER
+                $meter = new Meters;
+                $meter->MeterNumber = $meterNumber;
+                $meter->MeterDigits = '5';
+                $meter->Multiplier = $multiplier;
+                $meter->ChargingMode = 'ENERGY';
+                $meter->Make = $ticket->NewMeterBrand;
+                $meter->MeterStatus = 'ACTIVE';
+                $meter->InitialReading = $kwhStart;
+                $meter->save();
+            }
+
+            
 
             // INSERT CHANGE METER
             $changeMeter = new ChangeMeter;
@@ -3970,7 +3999,12 @@ class TicketsController extends AppBaseController
                 ->first();
 
             if ($reading != null) {
-                BillsReadings::where("AccountNumber", $ticket->AccountNumber)
+                /*BillsReadings::where("AccountNumber", $ticket->AccountNumber)
+                    ->where('ServicePeriodEnd', $reading->ServicePeriodEnd)
+                    ->update(['PowerReadings' => 0]);*/
+                    DB::connection('sqlsrvbilling')
+                    ->table('Readings')
+                    ->where("AccountNumber", $ticket->AccountNumber)
                     ->where('ServicePeriodEnd', $reading->ServicePeriodEnd)
                     ->update(['PowerReadings' => 0]);
             }
@@ -4014,8 +4048,18 @@ class TicketsController extends AppBaseController
         $id = $request['Id'];
 
         $ticket = Tickets::find($id);
+        
 
         $meter = Meters::where('MeterNumber', $ticket->NewMeterNo)->first();
+
+        
+        if($meter != null){
+            $validateMeter = DB::connection('sqlsrvbilling')
+                ->table('AccountMaster')
+                ->whereRaw("AccountNumber='" . $ticket->AccountNumber . "'")
+                ->whereRaw("MeterNumber='" . $ticket->NewMeterNo . "'")
+                ->first();
+        }
 
         // get last reading
         $reading = DB::connection('sqlsrvbilling')
@@ -4031,7 +4075,8 @@ class TicketsController extends AppBaseController
             ->orderByDesc('ServicePeriodEnd')
             ->first();
 
-        $ticket->MeterNumberExists = $meter != null ? true : false;
+        //$ticket->MeterNumberExists = $meter != null ? true : false;
+        $ticket->MeterNumberExists = $validateMeter != null ? false : true;
         $ticket->LastReading = $reading != null ? $reading->PowerReadings : '0';
         $ticket->LastReadingDate = $reading != null ? $reading->ReadingDate : null;
         $ticket->ServicePeriodEnd = date('Y-m-d', strtotime($sysParams->ServicePeriodEnd));
