@@ -208,7 +208,7 @@ use App\Models\IDGenerator;
                         <span class="input-group-text"><i class="fas fa-code-branch"></i></span>
                     </div>
 
-                    {!! Form::number('LoadCategory', null, ['class' => 'form-control form-control-sm','maxlength' => 300,'maxlength' => 300, 'step' => 'any', 'placeholder' => '.25 if residential, greater than that if power loads', 'required' => true]) !!}                  
+                    {!! Form::number('LoadCategory', null, ['class' => 'form-control form-control-sm','maxlength' => 300,'maxlength' => 300, 'step' => 'any', 'placeholder' => 'Please refer to the Computed Load in the Plan Electrical', 'required' => true]) !!}                  
                 </div>
             </div>
         </div>  

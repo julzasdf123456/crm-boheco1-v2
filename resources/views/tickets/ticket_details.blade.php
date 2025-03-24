@@ -38,10 +38,13 @@
                 <div class="divider"></div>
 
                 <span class="text-muted"><i class="fas fa-info-circle ico-tab"></i>{{ $tickets->TicketType }}</span><br>
+                {{$tickets->ParentTicket}}
                 @php
                     $parent = TicketsRepository::where('id', $tickets->ParentTicket)->first();
                 @endphp
+                {{$parent->Name}}
                 <h4><span class="text-muted">{{ $parent != null ? $parent->Name . ' - ' : '' }}</span>{{ $tickets->Ticket }}</h4>
+                
                 <p>{{ $tickets->Reason }}</p>
 
                 {{-- TABS --}}

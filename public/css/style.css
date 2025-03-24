@@ -1046,3 +1046,48 @@ body.dark-mode .timeline-item {
 .pl-25{
     padding-left: 25px;
 }
+
+.edit-service-con-mtr-trnsfrmr .input-group>.form-control{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.edit-service-con-mtr-trnsfrmr .form-group .row{
+    align-items: center;
+}
+
+.edit-service-con-mtr-trnsfrmr .form-group label{
+    margin-bottom: 0;
+}
+
+@media (min-width: 992px) {
+    .edit-service-con-mtr-trnsfrmr .form-group.col-sm-12>.row>.col-lg-2{
+        -webkit-flex: 0 0 15.47%;
+        -ms-flex: 0 0 15.47%;
+        flex: 0 0 15.47%;
+        max-width: 15.47%;
+    }
+    .edit-service-con-mtr-trnsfrmr .form-group.col-sm-12>.row>.col-lg-10{
+        -webkit-flex: 0 0 84.53%;
+        -ms-flex: 0 0 84.53%;
+        flex: 0 0 84.53%;
+        max-width: 84.53%;
+    }
+}
+
+#MeterNotes{
+    min-height: 86px;
+}
+
+table.border-top-none tr:first-child th{
+    border-top:0;
+}
+
+table.bottom-bordered tr:last-child td, table.bottom-bordered tr:last-child th{
+    border-bottom: 1px solid #dee2e6;
+}
+
+.form-group .input-group>.form-control{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}

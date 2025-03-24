@@ -54,7 +54,7 @@
     {{-- <link rel="stylesheet" href="{{ URL::asset('css/datatables.bootstrap4.min.css'); }}"> --}}
     {{-- <link rel="stylesheet" href="{{ URL::asset('css/datatables.bootstrap4.buttons.min.css'); }}"> --}}
     <link rel="stylesheet" href="{{ URL::asset('css/responsive.bootstrap4.min.css'); }}">
-    <link rel="stylesheet" href="{{ URL::asset('css/style.css'); }}">
+    <link rel="stylesheet" href="{{ URL::asset('css/style.css'); }}?v={{ time() }}">
 
     <style>
         :root {

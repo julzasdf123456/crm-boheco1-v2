@@ -11,7 +11,7 @@
         </div>
     </section>
 
-    <div class="content px-3">
+    <div class="content px-3 edit-service-con-mtr-trnsfrmr">
 
         @include('adminlte-templates::common.errors')
 

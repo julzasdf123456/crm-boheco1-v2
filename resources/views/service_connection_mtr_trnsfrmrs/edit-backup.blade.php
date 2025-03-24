@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-12">
-                    <h1>Edit Member Consumers</h1>
+                    <h1>Edit Service Connection Mtr Trnsfrmr</h1>
                 </div>
             </div>
         </div>
@@ -17,19 +17,21 @@
 
         <div class="card">
 
-            {!! Form::model($memberConsumers, ['route' => ['memberConsumers.update', $memberConsumers->Id], 'method' => 'patch']) !!}
+            {!! Form::model($serviceConnectionMtrTrnsfrmr, ['route' => ['serviceConnectionMtrTrnsfrmrs.update', $serviceConnectionMtrTrnsfrmr->id], 'method' => 'patch']) !!}
 
             <div class="card-body">
                 <div class="row">
-                    <input type="hidden" name="Id" id="Membership_Id" value="{{ $memberConsumers->Id }}">
-                    <input type="hidden" name="Office" id="Office" value="{{ $memberConsumers->Office }}">
-                    @include('member_consumers.fields')
+                    <input type="hidden" name="id" value="{{ $serviceConnectionMtrTrnsfrmr->id }}">
+
+                    <input type="hidden" name="ServiceConnectionId" value="{{ $serviceConnectionMtrTrnsfrmr->ServiceConnectionId }}">
+
+                    @include('service_connection_mtr_trnsfrmrs.fields')
                 </div>
             </div>
 
             <div class="card-footer">
                 {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('memberConsumers.index') }}" class="btn btn-default">Cancel</a>
+                <a href="{{ route('serviceConnectionMtrTrnsfrmrs.index') }}" class="btn btn-default">Cancel</a>
             </div>
 
             {!! Form::close() !!}
