@@ -993,13 +993,16 @@ class TicketsController extends AppBaseController
 
     public function updateExecution(Request $request) {
         $ticket = Tickets::find($request['id']);
+
+        
         
         $ticket->Status = $request['Status'];
         $ticket->Assessment = $request['Assessment'];
         $ticket->Notes = $request['Notes'];
         $ticket->DateTimeLinemanExecuted = date('Y-m-d H:i:s', strtotime($request['DateTimeLinemanExecuted']));
         $ticket->save();
-
+        
+        
         
         // CREATE LOG
         $ticketLog = new TicketLogs;
@@ -1026,12 +1029,29 @@ class TicketsController extends AppBaseController
                     $account->save();
                 }
             }
+            
+            if ($ticketParent != null && ($ticketParent->ParentTicket== '1668541254422' && $ticket->Ticket == '1668541254423')) {
+               $account = AccountMaster::find($ticket->AccountNumber);
+
+                if ($account != null) {
+                    if($request['PaymentStatus'] != null && $request['PaymentStatus'] == 'Paid'){
+                        $account->AccountStatus = 'ACTIVE';
+                        $account->save();
+                    }else{
+                        $account->AccountStatus = 'DISCO';
+                        $account->save();
+                        
+                    }
+                    
+                }
+            }
+
         } else {
             $ticketLog->LogDetails = $request['Notes'];
         }            
-        $ticketLog->UserId = Auth::id();
-        $ticketLog->save();
-
+       $ticketLog->UserId = Auth::id();
+       $ticketLog->save();
+        
         // SEND SMS
         /*
         if ($ticket->ContactNumber != null) {

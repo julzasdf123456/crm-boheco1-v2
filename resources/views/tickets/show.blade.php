@@ -192,6 +192,8 @@
                         </div>
                     </div>
 
+                    
+
                     @if (in_array($tickets->TicketRepoId, Tickets::getMeterInspectionsId()))
                         <div class="form-group">
                             <label>Recommendation</label>
@@ -217,6 +219,16 @@
                         <label for="Notes">Notes/Field Remarks</label>                        
                         <textarea type="text" class="form-control" name="Notes" id="Notes"></textarea>
                     </div>
+
+                    @if($tickets->ParentTicket == '1668541254422' && $tickets->TicketRepoId == '1668541254423')
+                        <div class="form-group">
+                            <label>Payment Status</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="Paid" id="paid" value="Paid">
+                                <label class="form-check-label" for="paid">Paid</label>
+                            </div>
+                        </div>
+                    @endif
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -309,6 +321,7 @@
                         Status : $('input[name="Status"]:checked').val(),
                         Assessment : $('input[name="Assessment"]:checked').val(),
                         Notes : $('#Notes').val(),
+                        PaymentStatus : $('input[name="Paid"]:checked').val(),
                        
                     },
                     success : function(response) {
