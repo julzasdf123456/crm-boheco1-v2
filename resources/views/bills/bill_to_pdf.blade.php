@@ -47,7 +47,7 @@
         height: 100%;
         margin: 0;
         /* padding: 290px 30px 0 30px; */
-        background-image: url("{{ URL::asset('imgs/Header_PNG.png') }}");
+        /*background-image: url("{{ URL::asset('imgs/Header_PNG.png') }}");*/
         background-size: contain;
         background-position: top center;
         background-repeat: no-repeat;
@@ -120,10 +120,17 @@
     ol{
         padding-left: 15px;
     }
+
+    .header-official{
+        position: absolute;
+        top: 0;
+        left:0;
+        width: 100%;
+    }
 </style>
 <body class="full-width">
     <div class="bill-body full-width">
-        {{-- <img src="{{ URL::asset('imgs/Header_PNG.png') }}" class="header-official"> --}}
+        <img src="{{ URL::asset('imgs/Header_PNG.png') }}" class="header-official">
         <div class="header-official-bg">
             <div style="padding: 180px 30px 0 30px;">
                 <div class="row">
