@@ -342,4 +342,154 @@ class MiscellaneousApplicationsController extends AppBaseController
 
         ]);
     }
+
+    public function editServiceDropPurchasing($id)
+    {
+
+        $miscellaneousApplication = DB::table('CRM_MiscellaneousApplications')
+                ->leftJoin('CRM_Towns', 'CRM_MiscellaneousApplications.Town', '=', 'CRM_Towns.id')
+                ->leftJoin('CRM_Barangays', 'CRM_MiscellaneousApplications.Barangay', '=', 'CRM_Barangays.id')
+                ->leftJoin('users', 'CRM_MiscellaneousApplications.UserId', '=', 'users.id')
+                ->select('CRM_MiscellaneousApplications.id',
+                    'CRM_MiscellaneousApplications.ConsumerName',
+                    'CRM_MiscellaneousApplications.Sitio',
+                    'CRM_Towns.Town',
+                    'CRM_Barangays.Barangay',
+                    'CRM_MiscellaneousApplications.Notes',
+                    'CRM_MiscellaneousApplications.Status',
+                    'CRM_MiscellaneousApplications.created_at',
+                    'CRM_MiscellaneousApplications.ServiceDropLength',
+                    'CRM_MiscellaneousApplications.TotalAmount',
+                    'users.name'
+                )
+                ->whereRaw("CRM_MiscellaneousApplications.id='" . $id . "'")
+                ->first();
+        
+
+        $miscellaneousPayment = MiscellaneousPayments::where('MiscellaneousId', $id)->first();
+
+        //var_dump($miscellaneousPayment);
+        
+        $towns = Towns::orderBy('Town')->pluck('Town', 'id');
+
+        //var_dump($towns);
+        $town_id = null;
+        foreach($towns as $index=>$value){
+            
+            if($value == $miscellaneousApplication->Town){
+                $town_id = $index;
+                break;
+            }
+        }
+
+        $vat = ($miscellaneousApplication->ServiceDropLength * $miscellaneousPayment->PricePerQuantity) * 0.12;
+
+        
+
+        return view('/miscellaneous_applications/edit_service_drop_request', [
+            'miscellaneousApplication' => $miscellaneousApplication,
+            'miscellaneousPayment' => $miscellaneousPayment,
+            'towns' => $towns,
+            'selectedTown' => $town_id,
+            'vat' => $vat,
+        ]);
+
+        
+    }
+
+    public function updateServiceDropPurchase(UpdateMiscellaneousApplicationsRequest $request) {
+        $input = $request->all();
+
+        $miscellaneousApplications = $this->miscellaneousApplicationsRepository->find($input['id']);
+
+        if (empty($miscellaneousApplications)) {
+            Flash::error('Miscellaneous Applications not found');
+
+            return redirect(route('miscellaneousApplications.index'));
+        }
+
+        $miscellaneousApplications = $this->miscellaneousApplicationsRepository->update($request->all(), $input['id']);
+
+        // SAVE Miscellaneous Payments
+        MiscellaneousPayments::where('MiscellaneousId', $miscellaneousApplications->id)->update([
+            'Quantity' => $input['ServiceDropLength'],
+            'PricePerQuantity' =>  $input['PricePerQuantity'],
+            'Amount' =>  $input['TotalAmount'],
+        ]);
+
+        $miscPayments = MiscellaneousPayments::where('MiscellaneousId', $miscellaneousApplications->id)->first();
+
+        $miscellaneousApplications = DB::table('CRM_MiscellaneousApplications')
+            ->leftJoin('CRM_Towns', 'CRM_MiscellaneousApplications.Town', '=', 'CRM_Towns.id')
+            ->leftJoin('CRM_Barangays', 'CRM_MiscellaneousApplications.Barangay', '=', 'CRM_Barangays.id')
+            ->select('CRM_MiscellaneousApplications.id',
+                'CRM_MiscellaneousApplications.ConsumerName',
+                'CRM_MiscellaneousApplications.Sitio',
+                'CRM_Towns.Town',
+                'CRM_Barangays.Barangay',
+                'CRM_MiscellaneousApplications.TotalAmount',
+            )
+            ->where('CRM_MiscellaneousApplications.id', $input['id'])
+            ->first();
+
+        $queueId = $input['id'] . '-SDW';
+
+        CRMQueue::where('id', $queueId)->update([
+            'SubTotal' => floatval($input['ServiceDropLength']) * floatval($input['PricePerQuantity']),
+            'VAT' =>  $input['VAT'],
+            'Total' =>  $input['TotalAmount'],
+        ]);
+
+        $queue = CRMQueue::where('id', $queueId)->first();
+
+
+        /**
+         * CRM QUEUE DETAILS
+         */
+        
+        $queuDetails = CRMDetails::where('ReferenceNo', $queueId)
+        ->where('GLCode','=', $miscPayments->GLCode)
+        ->update([
+            'Particular' => $miscPayments->Description . ' - ' . $input['ServiceDropLength'] . ' mtrs',
+            'Total' => floatval($input['ServiceDropLength']) * floatval($input['PricePerQuantity']),
+        ]);
+
+        $queuDetails = CRMDetails::where('ReferenceNo', $queueId)->first();
+        
+
+        $queuDetails = CRMDetails::where('ReferenceNo', $queueId)
+        ->where('GLCode', '22420414001')
+        ->update([
+            'Particular' => 'EVAT',
+            'Total' => $input['VAT'],
+        ]);
+        Flash::success('Service Drop Purchasing Request was updated successfully.');
+        return redirect(route('miscellaneousApplications.service-drop-purchasing'));
+    }
+
+    public function destroyServiceDropPurchase($id)
+    {
+        $miscellaneousApplications = $this->miscellaneousApplicationsRepository->find($id);
+
+        if (empty($miscellaneousApplications)) {
+            Flash::error('Miscellaneous Applications not found');
+
+            return redirect(route('miscellaneousApplications.index'));
+        }
+
+        $this->miscellaneousApplicationsRepository->delete($id);
+       
+        MiscellaneousPayments::where('MiscellaneousId', $id)->delete();
+        $queueId = $id. '-SDW';
+        CRMQueue::where('id', $queueId)->delete();
+        CRMDetails::where('ReferenceNo', $queueId)->delete();
+
+        TicketLogs::where('TicketId', $id)->delete();
+        
+        Flash::success('Miscellaneous Applications deleted successfully.');
+
+        return redirect(route('miscellaneousApplications.service-drop-purchasing'));
+    }
 }
+
+    

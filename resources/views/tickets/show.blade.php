@@ -325,13 +325,13 @@
                        
                     },
                     success : function(response) {
-                       /* var ticket = response['Ticket']
+                       var ticket = response['Ticket']
                         if (ticket=='1668541254390' || ticket=='1672792232225') {
                             window.location.href = "{{ url('/tickets/change-meter-update') }}" + "/" + response['id']
                         } else {
                             location.reload()
                         }
-                        */
+                        
                     },
                     error : function(error) {
                         // alert(error);

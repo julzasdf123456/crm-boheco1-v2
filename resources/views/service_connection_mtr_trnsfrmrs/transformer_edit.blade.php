@@ -5,7 +5,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-12">
-                    <h1>Edit Service Connection Meter</h1>
+                    <h1>Edit Service Connection Transformer</h1>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
 
                     <input type="hidden" name="ServiceConnectionId" value="{{ $serviceConnectionMtrTrnsfrmr->ServiceConnectionId }}">
 
-                    @include('service_connection_mtr_trnsfrmrs.fields')
+                    @include('service_connection_mtr_trnsfrmrs.transformer_fields')
                 </div>
             </div>
 

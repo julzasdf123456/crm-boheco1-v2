@@ -1075,9 +1075,9 @@ body.dark-mode .timeline-item {
     }
 }
 
-#MeterNotes{
+/*#MeterNotes{
     min-height: 86px;
-}
+}*/
 
 table.border-top-none tr:first-child th{
     border-top:0;

@@ -636,6 +636,7 @@
      * FUNCTIONS
      */
     function fetchBarangayFromTown(townId, prevValue) {
+        var selectedBarangay = $('#selectedBarangay').val();
         $.ajax({
             url : "{{ url('/barangays/get-barangays-json/') }}/" + townId,
             type: "GET",
@@ -644,7 +645,7 @@
                 $('#Barangay option').remove();
                 $('#Barangay').append("<option value=''>-- Select --</option>");
                 $.each(data, function(index, element) {
-                    $('#Barangay').append("<option value='" + element + "' " + (element==prevValue ? "selected='selected'" : " ") + ">" + index + "</option>");
+                    $('#Barangay').append("<option value='" + element + "' " + (element==prevValue || index == selectedBarangay  ? "selected='selected'" : " ") + ">" + index + "</option>");
                 });
             },
             error : function(error) {

@@ -99,7 +99,7 @@
                 @endif
             @else
                 @if (Auth::user()->hasAnyRole(['Administrator', 'Heads and Managers', 'Metering Personnel'])) 
-                    <a href="{{ route('serviceConnectionMtrTrnsfrmrs.edit', [$serviceConnectionMeter->id]) }}" class="btn btn-sm" title="Update Transformer Details">
+                    <a href="{{ route('serviceConnectionMtrTrnsfrmrs.edit_transformer', [$serviceConnectionMeter->id]) }}" class="btn btn-sm" title="Update Transformer Details">
                         <i class="fas fa-pen"></i>
                     </a>
                 @endif

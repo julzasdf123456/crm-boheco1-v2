@@ -329,4 +329,23 @@ class ServiceConnectionMtrTrnsfrmrController extends AppBaseController
             abort(403, 'Access denied');
         }        
     }
+
+    public function editTransformer($id){
+        $serviceConnectionMtrTrnsfrmr = $this->serviceConnectionMtrTrnsfrmrRepository->find($id);
+
+        if (empty($serviceConnectionMtrTrnsfrmr)) {
+            Flash::error('Service Connection Transfrmr not found');
+
+            return redirect(route('serviceConnectionMtrTrnsfrmrs.index'));
+        }
+
+        /**
+         * ASSESS PERMISSIONS
+         */
+        if(Auth::user()->hasAnyPermission(['update membership', 'sc update', 'update metering data', 'Super Admin'])) {
+            return view('service_connection_mtr_trnsfrmrs.transformer_edit')->with('serviceConnectionMtrTrnsfrmr', $serviceConnectionMtrTrnsfrmr);
+        } else {
+            return abort(403, "You're not authorized to create a service connection application.");
+        } 
+    }
 }

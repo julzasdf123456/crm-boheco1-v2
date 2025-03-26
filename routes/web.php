@@ -206,6 +206,7 @@ Route::resource('serviceConnectionInspections', App\Http\Controllers\ServiceConn
 
 Route::get('/service_connection_mtr_trnsfrmrs/assigning', [App\Http\Controllers\ServiceConnectionMtrTrnsfrmrController::class, 'assigning'])->name('serviceConnectionMtrTrnsfrmrs.assigning');
 Route::get('/service_connection_mtr_trnsfrmrs/create_step_three/{scId}', [App\Http\Controllers\ServiceConnectionMtrTrnsfrmrController::class, 'createStepThree'])->name('serviceConnectionMtrTrnsfrmrs.create-step-three');
+Route::get('/service_connection_mtr_trnsfrmrs/edit_transformer/{scId}', [App\Http\Controllers\ServiceConnectionMtrTrnsfrmrController::class, 'editTransformer'])->name('serviceConnectionMtrTrnsfrmrs.edit_transformer');
 Route::resource('serviceConnectionMtrTrnsfrmrs', App\Http\Controllers\ServiceConnectionMtrTrnsfrmrController::class);
 
 
@@ -904,8 +905,11 @@ Route::get('/miscellaneous_applications/service-drop-purchasing', [Miscellaneous
 Route::get('/miscellaneous_applications/create-service-drop-purchasing', [MiscellaneousApplicationsController::class, 'createServiceDropPurchasing'])->name('miscellaneousApplications.create-service-drop-purchasing');
 Route::post('/miscellaneous_applications/store-service-drop-purchase', [MiscellaneousApplicationsController::class, 'storeServiceDropPurchase'])->name('miscellaneousApplications.store-service-drop-purchase');
 Route::get('/miscellaneous_applications/service-drop-purchasing-view/{id}', [MiscellaneousApplicationsController::class, 'serviceDropPurchasingView'])->name('miscellaneousApplications.service-drop-purchasing-view');
+Route::get('/miscellaneous_applications/edit-service-drop-purchasing/{id}', [MiscellaneousApplicationsController::class, 'editServiceDropPurchasing'])->name('miscellaneousApplications.edit-service-drop-purchasing');
 Route::get('/miscellaneous_applications/transformer-testing', [MiscellaneousApplicationsController::class, 'transformerTesting'])->name('miscellaneousApplications.transformer-testing');
 Route::get('/miscellaneous_applications/disco-application', [MiscellaneousApplicationsController::class, 'discoApplication'])->name('miscellaneousApplications.disco-application');
+Route::post('/miscellaneous_applications/update-service-drop-purchase', [MiscellaneousApplicationsController::class, 'updateServiceDropPurchase'])->name('miscellaneousApplications.update-service-drop-purchase');
+Route::delete('/miscellaneous_applications/destroy-service-drop-purchase/{id}', [MiscellaneousApplicationsController::class, 'destroyServiceDropPurchase'])->name('miscellaneousApplications.destroy-service-drop-purchase');
 Route::resource('miscellaneousApplications', MiscellaneousApplicationsController::class);
 
 

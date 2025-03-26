@@ -13,7 +13,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item" title="Service Drop Purchasing Request Home"><a href="{{ route('miscellaneousApplications.service-drop-purchasing') }}">SDPR Home</a></li>
-                    <li class="breadcrumb-item"><a href="">View SDPR</a></li>
+                    <li class="breadcrumb-item">View SDPR</li>
                 </ol>
             </div>
         </div>
@@ -30,7 +30,12 @@
                 <span class="badge bg-warning">{{ $miscellaneousApplication->Status }}</span>
 
                 <div class="card-tools">
-                    <a href="" class="btn btn-tool"><i class="fas fa-pen"></i></a>
+                    <a href="{{ route('miscellaneousApplications.edit-service-drop-purchasing', [$miscellaneousApplication->id]) }}" class="btn btn-tool"><i class="fas fa-pen"></i></a>
+                    <button class="btn btn-sm btn-link-muted" onclick="confirmDelete({{ $miscellaneousApplication->id }})" title="Delete ticket"><i class="fas fa-trash"></i></button>
+                    <form id="delete-form-{{ $miscellaneousApplication->id }}" action="{{ route('miscellaneousApplications.destroy-service-drop-purchase', $miscellaneousApplication->id) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
                 </div>
             </div>
             <div class="card-body">
@@ -108,4 +113,22 @@
         </div>
     </div>
 </div>
+<script>
+    function confirmDelete(id) {
+        Swal.fire({
+            title: "Confirm Delete",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Proceed Delete"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + id).submit();
+            }
+        });
+    }
+</script>
 @endsection
+

@@ -314,4 +314,8 @@ class Tickets extends Model
     public static function getDisconnectionPole(){
         return '1668541254422';
     }
+
+    public static function getDisconnectionDelinquency(){
+        return '1668541254423';
+    }
 }

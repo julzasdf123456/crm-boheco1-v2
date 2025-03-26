@@ -993,8 +993,7 @@ class TicketsController extends AppBaseController
 
     public function updateExecution(Request $request) {
         $ticket = Tickets::find($request['id']);
-
-        
+       
         
         $ticket->Status = $request['Status'];
         $ticket->Assessment = $request['Assessment'];

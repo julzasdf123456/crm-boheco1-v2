@@ -42,7 +42,9 @@
                 @php
                     $parent = TicketsRepository::where('id', $tickets->ParentTicket)->first();
                 @endphp
-                {{$parent->Name}}
+                {{$tickets->Ticket }}
+
+                {{$tickets->TicketRepoId}}
                 <h4><span class="text-muted">{{ $parent != null ? $parent->Name . ' - ' : '' }}</span>{{ $tickets->Ticket }}</h4>
                 
                 <p>{{ $tickets->Reason }}</p>
