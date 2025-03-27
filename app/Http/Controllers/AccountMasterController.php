@@ -266,6 +266,14 @@ class AccountMasterController extends AppBaseController
         } else {
             $meterOwner = null;
         }
+
+        $meterType = 'ENERGY';
+
+        if($serviceAccount->ConsumerType == 'I'){
+            $meterType = 'DEMAND';
+        }
+
+
         
 
         return view('/account_masters/account_migration_step_two', [
@@ -274,6 +282,7 @@ class AccountMasterController extends AppBaseController
             'meter' => $meterAndTransformer,
             'meters' => $meters,
             'meterOwner' => $meterOwner,
+            'meterType' => $meterType,
         ]);
     }
 

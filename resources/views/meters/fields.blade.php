@@ -22,6 +22,18 @@
     {!! Form::number('InitialReading', 0, ['class' => 'form-control form-control-sm']) !!}
 </div>
 
+<!-- Meter Type -->
+<div class="form-group col-sm-6">
+    {!! Form::label('ChargingMode', 'Meter Type:') !!}
+    {!! Form::select('ChargingMode', ['ENERGY' => 'ENERGY', 'DEMAND' => 'DEMAND'], $meterType != null ? $meterType : null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Initialreading Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('DemandType', 'Demand Type:') !!}
+    {!! Form::select('DemandType', ['SWEEP' => 'SWEEP', 'CUMULATIVE' => 'CUMULATIVE'], $meter != null ? $meter->DemandType : null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Remarks Field -->
 <div class="form-group col-sm-12">
     {!! Form::label('Remarks', 'Remarks:') !!}
