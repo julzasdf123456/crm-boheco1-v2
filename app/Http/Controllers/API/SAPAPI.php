@@ -25,7 +25,7 @@ class SAPAPI extends Controller {
                             ->on('Bills.ServicePeriodEnd', '=', 'Readings.ServicePeriodEnd');
                     })
                     ->whereRaw("Bills.Reserve1 IS NULL")                   
-                    ->whereDate('Bills.ServicePeriodEnd', '>=', '2025-01-01')
+                    ->whereDate('Bills.ServicePeriodEnd', '>=', '2025-02-01')
                     ->select(
                         'Bills.AccountNumber',
                         'Bills.ServicePeriodEnd',
@@ -162,9 +162,30 @@ class SAPAPI extends Controller {
             $header['CardCode'] = 'C00001'; // FIXED CARD CODE FOR BOHECO I, Change if necessary
             // $header['NumAtCard'] = $item->InvoicePrefix . $item->InvoiceNumber . $item->InvoiceSuffix; // uncomment during deploymet
             $header['NumAtCard'] = $item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd));
-            $header['DocDate'] = date('Ymd', strtotime($item->DocDate));
+            
+            
+        
+
+            if ($item->BillingDate === null) {
+                $paidBills = DB::connection("sqlsrvbilling")
+                                    ->table('PaidBills')
+                                    ->where('AccountNumber','=',$item->AccountNumber)
+                                    ->where('ServicePeriodEnd', '=', $item->ServicePeriodEnd)
+                                    ->first();
+                var_dump($paidBills->PostingDate);
+                if(!empty($paidBills['PostingDate'])){
+                    
+                    $billingDate = date('Ymd', strtotime($paidBills['PostingDate']));
+                }else{
+                    $billingDate = date('Ymd', strtotime($item->DocDate));;
+                }
+            }else{
+                $billingDate = date('Ymd', strtotime($item->BillingDate));
+            }
+            
+            $header['DocDate'] = $billingDate;
             $header['DocDueDate'] = date('Ymd', strtotime($item->DueDate));
-            $header['TaxDate'] = date('Ymd', strtotime($item->DocDate));
+            $header['TaxDate'] = $billingDate;
             $header['Comments'] = "Account Number: ".$item->AccountNumber." Service Period:". $item->ServicePeriodEnd ;
             $header['AccountNumber'] = $item->AccountNumber;
             $header['ServicePeriodEnd'] = $item->ServicePeriodEnd;
@@ -403,15 +424,19 @@ class SAPAPI extends Controller {
                             ->on('Bills.ServicePeriodEnd', '=', 'PaidBills.ServicePeriodEnd');
                     })
                     ->where('Bills.Reserve1','Yes')                 
-                    ->whereDate('PaidBills.ServicePeriodEnd', '>=', '2025-01-01')                    
+                    ->whereDate('PaidBills.ServicePeriodEnd', '>=', '2025-02-01')                  
                     ->whereRaw("PaidBills.Others1 IS NULL")                      
                     ->select(
                         'Bills.AccountNumber',
                         'Bills.ServicePeriodEnd',
-                        'Bills.BillNumber as InvReferenceNo',
-                        'Bills.BillingDate',
-                        'Bills.DueDate',
+                        'Bills.BillNumber AS InvReferenceNo',
+                        'Bills.BillingDate AS BillingDate',
+                        'Bills.DueDate AS DueDate',
 
+                        'PaidBills.PromptPayment AS Discount',
+                        'PaidBills.Surcharge As Surcharge',
+                        'PaidBills.Amount2306 AS WithholdingTaxes1',
+                        'PaidBills.Amount2307 AS WithholdingTaxes2',
                         'PaidBills.NetAmount as PaidAmount',
                         'PaidBills.PostingDate as DocDate',
                         
@@ -443,7 +468,28 @@ class SAPAPI extends Controller {
                 
                 $details['Account'] = '12110201000';
                 $details['PaidAmount'] = $item->PaidAmount;
-                $details['Remarks'] = "Payment for Transaction ID: ".'INPAY' .$item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd));
+
+                $surchage = '';
+                $withholding = '';
+                $discount = '';
+
+                if($item->Surcharge != 0){
+                    $sc = $item->Surcharge;
+                    $surchage = $sc + ($sc * 0.12);
+                    $surchage = ", Surcharge: ".$surchage;
+                }
+
+                if($item->WithholdingTaxes1 != 0 || $item->WithholdingTaxes2 != 0){
+                    $withholding = $item->WithholdingTaxes1 + $item->WithholdingTaxes2;
+                    $withholding = ", Withholding Tax: ".$withholding;
+                }
+
+                if($item->Discount !=0){
+                    $discount = $item->Discount + $item->Discount;
+                    $discount = ", Discount: ".$discount;
+                }
+
+                $details['Remarks'] = "Transaction ID: ".'INPAY' .$item->AccountNumber.date('Ymd', strtotime($item->ServicePeriodEnd)).$surchage.$withholding.$discount;
                 $details['JournalRemarks'] = "Payment for account number: ".$item->AccountNumber.' with period date of: '.$item->ServicePeriodEnd;
                 $details['AccountNumber'] = $item->AccountNumber;
                 $details['ServicePeriodEnd'] = $item->ServicePeriodEnd;
@@ -462,7 +508,7 @@ class SAPAPI extends Controller {
 
         $data = DB::connection('sqlsrvaccounting')
                     ->table('TransactionHeader')
-                    ->where('Period', '>=', '2025-01-01')
+                    ->where('Period', '>=', '2025-02-01')
                     ->where(function ($query) {
                         $query->where('TransactionCode', 'OR')
                               ->orWhere('TransactionCode', 'ORSub');
@@ -606,7 +652,7 @@ class SAPAPI extends Controller {
                             ->on('TransactionHeader.TransactionNumber', '=', 'TransactionDetails.TransactionNumber')
                             ->on('TransactionHeader.TransactionCode', '=', 'TransactionDetails.TransactionCode');
                     })
-                    ->where('TransactionHeader.Period', '>=', '2025-01-01')
+                    ->where('TransactionHeader.Period', '>=', '2025-02-01')
                     ->where("TransactionHeader.ReferenceNo", "=", "Yes") 
                     ->where('TransactionDetails.Particulars', '=', 'Grand Total')  
                     ->select(

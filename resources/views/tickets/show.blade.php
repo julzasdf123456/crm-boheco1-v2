@@ -219,13 +219,21 @@
                         <label for="Notes">Notes/Field Remarks</label>                        
                         <textarea type="text" class="form-control" name="Notes" id="Notes"></textarea>
                     </div>
-
+                    @if($tickets->ParentTicket == '1668541254422' && $tickets->TicketRepoId == '1668541254426')
+                        <div class="form-group">
+                            <label for="AccountStatus">Account Status</label>  
+                            {!! Form::select('AccountStatus', ['DISCO' => 'DISCO', 'ILLEGAL' => 'ILLEGAL', 'ACTIVE' => 'ACTIVE (If paid / promise to pay)'], null, [
+                            'class' => 'form-control form-control-sm',
+                        ]) !!}
+                        </div>                        
+                    @endif
+                    <!--if($tickets->ParentTicket == '1668541254422' && $tickets->TicketRepoId == '1668541254423')-->
                     @if($tickets->ParentTicket == '1668541254422' && $tickets->TicketRepoId == '1668541254423')
                         <div class="form-group">
                             <label>Payment Status</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" name="Paid" id="paid" value="Paid">
-                                <label class="form-check-label" for="paid">Paid</label>
+                                <label class="form-check-label" for="paid">Paid / Promise to pay</label>
                             </div>
                         </div>
                     @endif
@@ -322,6 +330,7 @@
                         Assessment : $('input[name="Assessment"]:checked').val(),
                         Notes : $('#Notes').val(),
                         PaymentStatus : $('input[name="Paid"]:checked').val(),
+                        AccountStatus : $('select[name="AccountStatus"]').val(),
                        
                     },
                     success : function(response) {
@@ -329,7 +338,7 @@
                         if (ticket=='1668541254390' || ticket=='1672792232225') {
                             window.location.href = "{{ url('/tickets/change-meter-update') }}" + "/" + response['id']
                         } else {
-                            location.reload()
+                             location.reload()
                         }
                         
                     },

@@ -994,7 +994,7 @@ class TicketsController extends AppBaseController
     public function updateExecution(Request $request) {
         $ticket = Tickets::find($request['id']);
        
-        
+               
         $ticket->Status = $request['Status'];
         $ticket->Assessment = $request['Assessment'];
         $ticket->Notes = $request['Notes'];
@@ -1004,6 +1004,8 @@ class TicketsController extends AppBaseController
         
         
         // CREATE LOG
+
+        
         $ticketLog = new TicketLogs;
         $ticketLog->id = IDGenerator::generateID();
         $ticketLog->TicketId = $request['id'];
@@ -1015,6 +1017,7 @@ class TicketsController extends AppBaseController
             $ticketParent = DB::table('CRM_TicketsRepository')
                 ->where('id', $ticket->Ticket)
                 ->first();
+                
             if ($ticketParent != null && $ticketParent->ParentTicket==Tickets::getReconnectionParentNotArray()) {
                 $account = AccountMaster::find($ticket->AccountNumber);
                 if ($account != null) {
@@ -1029,8 +1032,18 @@ class TicketsController extends AppBaseController
                 }
             }
             
-            if ($ticketParent != null && ($ticketParent->ParentTicket== '1668541254422' && $ticket->Ticket == '1668541254423')) {
-               $account = AccountMaster::find($ticket->AccountNumber);
+        
+            /*if ($ticketParent != null && ($ticketParent->ParentTicket== '1668541254422' && $ticket->Ticket == '1668541254423')) { */
+        
+                        
+            if ($ticketParent != null && ($ticketParent->ParentTicket== '1668541254422' && $ticket->Ticket == '1668541254426')) {
+                $account = AccountMaster::find($ticket->AccountNumber);
+                if ($account != null) {
+                    $account->AccountStatus = $request['AccountStatus'];
+                    $account->save();
+                }
+            }elseif ($ticketParent != null && ($ticketParent->ParentTicket== '1668541254422' && $ticket->Ticket == '1668541254423')) {
+                $account = AccountMaster::find($ticket->AccountNumber);
 
                 if ($account != null) {
                     if($request['PaymentStatus'] != null && $request['PaymentStatus'] == 'Paid'){
@@ -1068,7 +1081,7 @@ class TicketsController extends AppBaseController
                     "\n\nHave a great day!";
                 }
                 SMSNotifications::createFreshSms($ticket->ContactNumber, $msg, 'TICKETS', $ticket->id);
-            }
+            } 
         }*/
         
         return response()->json($ticket, 200);
